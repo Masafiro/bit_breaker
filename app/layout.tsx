@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BIT BREAKER",
-  description: "A fun bit manipulation game!",
+  description: "ビット演算を駆使する頭脳派パズルゲーム！",
 };
 
 export default function RootLayout({
