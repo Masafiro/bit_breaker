@@ -21,7 +21,7 @@
           "operation_type": "cyclic-lshift"
         }
       ],
-      "minumum_moves": 2
+      "minimum_moves": 2
     }
   }
   
