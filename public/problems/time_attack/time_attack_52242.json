@@ -6,13 +6,13 @@
     "operations": [
       {
         "operation_type": "xor",
-        "parameter": "01101"
+        "parameter": "10100"
       },
       {
-        "operation_type": "cyclic_lshift"
+        "operation_type": "cyclic-rshift"
       }
     ],
-    "start": "11000",
-    "target": "01011"
+    "start": "11101",
+    "target": "01111"
   }
 }
