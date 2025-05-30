@@ -192,9 +192,15 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
 }
 
 function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
-  if (localStorage.getItem(problemFile) == "true"){
+  if (localStorage.getItem(problemFile) == "Solved"){
     return (
       <button className="problemButtonSolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+        {problemName}
+      </button>
+    );
+  } else if (localStorage.getItem(problemFile) == "SolvedMinimum"){
+    return (
+      <button className="problemButtonSolvedMinimum" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
         {problemName}
       </button>
     );
@@ -477,8 +483,11 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   }, []);
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
-    console.log("solved ", problemFileName);
-    localStorage.setItem(problemFileName, "true");
+    if (bitHistory.length - 1 === problem.minimum_moves){
+      localStorage.setItem(problemFileName, "SolvedMinimum");
+    } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
+      localStorage.setItem(problemFileName, "Solved");
+    }
   }
 
   return (
