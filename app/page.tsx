@@ -358,8 +358,8 @@ function TimeAttackSelection({ setStatus }: { setStatus: React.Dispatch<React.Se
       <div>
       <TimeAttackButtonContainer>
         <TimeAttackButton timeAttackName="5桁 1手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} />
-        <TimeAttackButton timeAttackName="5桁 2手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} />
-        <TimeAttackButton timeAttackName="5桁 3手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} />
+        <TimeAttackButton timeAttackName="5桁 2手 10問" timeAttackFile="time_attack2.json" setStatus={setStatus} />
+        <TimeAttackButton timeAttackName="5桁 3手 10問" timeAttackFile="time_attack3.json" setStatus={setStatus} />
       </TimeAttackButtonContainer>
       </div>
       <div>
