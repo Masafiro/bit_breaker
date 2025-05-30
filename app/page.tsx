@@ -171,14 +171,14 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
 function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
   if (localStorage.getItem(problemFile) == "true"){
     return (
-      <button className="problemButton" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
-        {problemName} (solved)
+      <button className="problemButtonSolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+        {problemName}
       </button>
     );
   } else {
     return (
-      <button className="problemButton" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
-        {problemName} (unsolved)
+      <button className="problemButtonUnsolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+        {problemName}
       </button>
     );
   }
@@ -247,15 +247,15 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
   return (
     <div>
       <ProblemButtonContainer>
-        <ProblemButton problemName="Problem 1" problemFile="problem1.json" setStatus={setStatus} />
-        <ProblemButton problemName="Problem 2" problemFile="problem2.json" setStatus={setStatus} />
-        <ProblemButton problemName="Problem 3" problemFile="problem3.json" setStatus={setStatus} />
-        <ProblemButton problemName="Problem 4" problemFile="problem3.json" setStatus={setStatus} />
-        <ProblemButton problemName="Problem 5" problemFile="problem3.json" setStatus={setStatus} />
+        <ProblemButton problemName="1" problemFile="problem1.json" setStatus={setStatus} />
+        <ProblemButton problemName="2" problemFile="problem2.json" setStatus={setStatus} />
+        <ProblemButton problemName="3" problemFile="problem3.json" setStatus={setStatus} />
+        <ProblemButton problemName="4" problemFile="problem3.json" setStatus={setStatus} />
+        <ProblemButton problemName="5" problemFile="problem3.json" setStatus={setStatus} />
       </ProblemButtonContainer>
       <div className="returnContainer">
-           <ReturnToTitleButton setStatus={setStatus} />
-           </div>
+        <ReturnToTitleButton setStatus={setStatus} />
+      </div>
     </div>
   );
 }

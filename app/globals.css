@@ -71,7 +71,7 @@ body {
 
 .problemButtonContainer {
   display: grid;
-  grid-template-columns: repeat(4, 140pt); 
+  grid-template-columns: repeat(5, 40pt);
   justify-content: center;
   align-items: center;
 
@@ -83,24 +83,36 @@ body {
   align-items: center;
 }
 
-.problemButton {
-  padding: 8px 16px;
+.problemButtonSolved {
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+  background-color: #7ae3ec;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.problemButtonUnsolved {
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+  background-color: #0062ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.timeAttackButton{
+  padding: 12px 12px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
-}
-
-.timeAttackButton{
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 8px;
 }
 
 .returnToTimeAttackSelectionButton {
