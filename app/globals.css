@@ -71,7 +71,7 @@ body {
 
 .problemButtonContainer {
   display: grid;
-  grid-template-columns: repeat(5, 40pt);
+  grid-template-columns: repeat(10, 40pt);
   justify-content: center;
   align-items: center;
 

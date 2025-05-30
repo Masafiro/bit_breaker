@@ -270,11 +270,56 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
   return (
     <div>
       <ProblemButtonContainer>
-        <ProblemButton problemName="1" problemFile="problem1.json" setStatus={setStatus} />
-        <ProblemButton problemName="2" problemFile="problem2.json" setStatus={setStatus} />
-        <ProblemButton problemName="3" problemFile="problem3.json" setStatus={setStatus} />
-        <ProblemButton problemName="4" problemFile="problem3.json" setStatus={setStatus} />
-        <ProblemButton problemName="5" problemFile="problem3.json" setStatus={setStatus} />
+        <ProblemButton problemName="1" problemFile="t1.json" setStatus={setStatus} />
+        <ProblemButton problemName="2" problemFile="t2.json" setStatus={setStatus} />
+        <ProblemButton problemName="3" problemFile="t3.json" setStatus={setStatus} />
+        <ProblemButton problemName="4" problemFile="t4.json" setStatus={setStatus} />
+        <ProblemButton problemName="5" problemFile="t5.json" setStatus={setStatus} />
+        <ProblemButton problemName="6" problemFile="4201.json" setStatus={setStatus} />
+        <ProblemButton problemName="7" problemFile="4202.json" setStatus={setStatus} />
+        <ProblemButton problemName="8" problemFile="4203.json" setStatus={setStatus} />
+        <ProblemButton problemName="9" problemFile="4204.json" setStatus={setStatus} />
+        <ProblemButton problemName="10" problemFile="4205.json" setStatus={setStatus} />
+        <ProblemButton problemName="11" problemFile="4206.json" setStatus={setStatus} />
+        <ProblemButton problemName="12" problemFile="4207.json" setStatus={setStatus} />
+        <ProblemButton problemName="13" problemFile="4208.json" setStatus={setStatus} />
+        <ProblemButton problemName="14" problemFile="4209.json" setStatus={setStatus} />
+        <ProblemButton problemName="15" problemFile="4210.json" setStatus={setStatus} />
+        <ProblemButton problemName="16" problemFile="4301.json" setStatus={setStatus} />
+        <ProblemButton problemName="17" problemFile="4302.json" setStatus={setStatus} />
+        <ProblemButton problemName="18" problemFile="4303.json" setStatus={setStatus} />
+        <ProblemButton problemName="19" problemFile="4304.json" setStatus={setStatus} />
+        <ProblemButton problemName="20" problemFile="4305.json" setStatus={setStatus} />
+        <ProblemButton problemName="21" problemFile="5201.json" setStatus={setStatus} />
+        <ProblemButton problemName="22" problemFile="5202.json" setStatus={setStatus} />
+        <ProblemButton problemName="23" problemFile="5203.json" setStatus={setStatus} />
+        <ProblemButton problemName="24" problemFile="5204.json" setStatus={setStatus} />
+        <ProblemButton problemName="25" problemFile="5205.json" setStatus={setStatus} />
+        <ProblemButton problemName="26" problemFile="5206.json" setStatus={setStatus} />
+        <ProblemButton problemName="27" problemFile="5207.json" setStatus={setStatus} />
+        <ProblemButton problemName="28" problemFile="5208.json" setStatus={setStatus} />
+        <ProblemButton problemName="29" problemFile="5209.json" setStatus={setStatus} />
+        <ProblemButton problemName="30" problemFile="5210.json" setStatus={setStatus} />
+        <ProblemButton problemName="31" problemFile="5301.json" setStatus={setStatus} />
+        <ProblemButton problemName="32" problemFile="5302.json" setStatus={setStatus} />
+        <ProblemButton problemName="33" problemFile="5303.json" setStatus={setStatus} />
+        <ProblemButton problemName="34" problemFile="5304.json" setStatus={setStatus} />
+        <ProblemButton problemName="35" problemFile="5305.json" setStatus={setStatus} />
+        <ProblemButton problemName="36" problemFile="5306.json" setStatus={setStatus} />
+        <ProblemButton problemName="37" problemFile="5307.json" setStatus={setStatus} />
+        <ProblemButton problemName="38" problemFile="5308.json" setStatus={setStatus} />
+        <ProblemButton problemName="39" problemFile="5309.json" setStatus={setStatus} />
+        <ProblemButton problemName="40" problemFile="5310.json" setStatus={setStatus} />
+        <ProblemButton problemName="41" problemFile="5311.json" setStatus={setStatus} />
+        <ProblemButton problemName="42" problemFile="5312.json" setStatus={setStatus} />
+        <ProblemButton problemName="43" problemFile="5313.json" setStatus={setStatus} />
+        <ProblemButton problemName="44" problemFile="5314.json" setStatus={setStatus} />
+        <ProblemButton problemName="45" problemFile="5315.json" setStatus={setStatus} />
+        <ProblemButton problemName="46" problemFile="5316.json" setStatus={setStatus} />
+        <ProblemButton problemName="47" problemFile="5317.json" setStatus={setStatus} />
+        <ProblemButton problemName="48" problemFile="5318.json" setStatus={setStatus} />
+        <ProblemButton problemName="49" problemFile="5319.json" setStatus={setStatus} />
+        <ProblemButton problemName="50" problemFile="5320.json" setStatus={setStatus} />
       </ProblemButtonContainer>
       <div className="returnContainer">
         <ReturnToTitleButton setStatus={setStatus} />
