@@ -256,14 +256,7 @@ function TimeAttackModeButton({setStatus}: {setStatus: React.Dispatch<React.SetS
 }
 function ModeSelection({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>; }){
     return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "left",
-                gap: "50px",
-            }}
-        >
+        <div className="modeSelectionButton">
             <ProblemModeButton setStatus={setStatus}/>
             <TimeAttackModeButton setStatus={setStatus}/>
         </div>

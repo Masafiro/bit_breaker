@@ -195,9 +195,9 @@ body {
 } */
 
 .problemModeButton {
-    width: 180px;
+    width: 400px;
+    height: 80px;
     top: 30px;
-    /* height: 160px; */
     position: relative;
     display: inline-block;
     font-weight: bold;
@@ -208,24 +208,15 @@ body {
     background: #00bcd4;
     border-top: solid 3px #00a3d4;
     border-bottom: solid 3px #00a3d4; 
+    font-size: 200%;
 } 
 .problemModeButton:hover {
     text-shadow: -6px 0px 15px rgba(255, 255, 240, 0.83),
                  6px 0px 15px rgba(255, 255, 240, 0.83);
 }
-
-/* .timeAttackModeButton {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 8px;
-} */
-
 .timeAttackModeButton {
-    width: 180px;
+    width: 400px;
+    height: 80px;
     top: 30px;
     position: relative;
     display: inline-block;
@@ -233,10 +224,11 @@ body {
     text-decoration: none;
     color: #FFF;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.73);
-    padding: 1em 0.5em;
+    padding: 0.3em 0.5em;
     background: #00bcd4;
     border-top: solid 3px #00a3d4;
     border-bottom: solid 3px #00a3d4; 
+    font-size: 200%;
 } 
 .timeAttackModeButton:hover {
     text-shadow: -6px 0px 15px rgba(255, 255, 240, 0.83),
@@ -288,4 +280,13 @@ body {
 
 .undoRetryButtonContainer{
   text-align: center;
+}
+
+.modeSelectionButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 50px; 
+  height: 20px;
 }
