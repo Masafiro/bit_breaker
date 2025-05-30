@@ -1,6 +1,7 @@
 # Deployment URL
 https://bit-breaker.vercel.app/
 
+参考サイト：https://note.com/shufugaishi/n/ncd5854ad64a0
 ---
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
