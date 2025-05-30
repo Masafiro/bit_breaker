@@ -1,0 +1,19 @@
+{
+  "problem": {
+    "bit_length": 5,
+    "minimum_moves": 1,
+    "operation_count": 2,
+    "operations": [
+      {
+        "operation_type": "and",
+        "parameter": "11001"
+      },
+      {
+        "operation_type": "xor",
+        "parameter": "01011"
+      }
+    ],
+    "start": "10011",
+    "target": "10001"
+  }
+}
