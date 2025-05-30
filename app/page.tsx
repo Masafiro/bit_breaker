@@ -160,6 +160,15 @@ function RetryButton({ bitHistory, dispatchbitHistory } : { bitHistory: bitHisto
   )
 }
 
+function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation> }){
+  return (
+    <div className="undoRetryButtonContainer">
+      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
+      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
+    </div>
+  )
+}
+
 function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="problemButtonContainer">
@@ -310,6 +319,14 @@ function MoveCounter({ moveCount } : { moveCount : number }){
   );
 }
 
+function MinimumMovesDisplay({ minimumMoves } : { minimumMoves : number }){
+  return (
+    <div>
+      最小手数: {minimumMoves}
+    </div>
+  );
+}
+
 function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>}){
   useEffect(() => {
     if (isActive){
@@ -325,6 +342,32 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
     </div>
   )
 }
+function ProblemModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setTime, setStatus }: { minimumMoves: number, moveCount: number, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>, setStatus: React.Dispatch<React.SetStateAction<Status>> }){
+  return (
+    <div className="gameInfoLeft">
+      <MinimumMovesDisplay minimumMoves={minimumMoves} />
+      <MoveCounter moveCount={moveCount} />
+      <Timer isActive={isActive} time={time} setTime={setTime} />
+      <ReturnToProblemSelectionButton setStatus={setStatus} />
+    </div>
+  )
+}
+
+function ProblemModeGameInfoRight({ bitHistory, dispatchbitHistory, problem }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem}){
+  return (
+    <div className="gameInfoRight">
+      <BitDisplay currentBits={problem.target} />
+      <BitDisplay currentBits={bitHistory[bitHistory.length - 1]} />
+      <BitOperationButtonContainer>
+        {problem.operations.map((operation, index) => (
+          <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} />
+        ))}
+      </BitOperationButtonContainer>
+      <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
+    </div>
+  )
+}
+
 function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Dispatch<React.SetStateAction<Status>>, problemFileName: string}) {
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
@@ -341,6 +384,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
         }
         const data = await response.json();
         setProblem(data.problem);
+        console.log(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
         dispatchbitHistory({ operation_type: "append", parameter: data.problem.start });
       } catch (error) {
@@ -361,26 +405,9 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   }
 
   return (
-    <div>
-      <div>
-        Target: {problem.target}
-      </div>
-      <BitDisplay currentBits={bitHistory[bitHistory.length - 1]} />
-      <MoveCounter moveCount={bitHistory.length - 1} />
-      <Timer isActive={bitHistory[bitHistory.length - 1] !== problem.target} time={time} setTime={setTime} />
-      <BitOperationButtonContainer>
-        {problem.operations.map((operation, index) => (
-          <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} />
-        ))}
-      </BitOperationButtonContainer>
-      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
-      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
-      <div>
-        <ReturnToProblemSelectionButton setStatus={setStatus} />
-      </div>
-      <div>
-        bitHistory: {bitHistory.toString()}
-      </div>
+    <div className="gameInfo">
+      <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={bitHistory[bitHistory.length - 1] !== problem.target} time={time} setTime={setTime} setStatus={setStatus}/>
+      <ProblemModeGameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
     </div>
   );
 }
