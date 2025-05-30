@@ -1,0 +1,7 @@
+{
+  "problems": [
+    "problem1.json",
+    "problem2.json"
+  ],
+  "problem_count": 5
+}

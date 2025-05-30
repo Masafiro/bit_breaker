@@ -24,3 +24,207 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* globals.css */
+.title {
+  color: blue;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.bitDisplay {
+  display: flex; /* 中央揃えのためにflexboxを使用 */
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center; /* 垂直方向に中央揃え */
+  font-size: 1.5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-weight: bold; /* 太字にして強調 */
+  color: #333; /* テキストの色 */
+  background-color: #f0f0f0; /* 背景色 */
+  border: 2px solid #007bff; /* 枠線 */
+  border-radius: 8px; /* 角を丸くする */
+  padding: 16px; /* 内側の余白 */
+  width: 50%; /* コンテナの幅を調整 */
+  margin: 16px auto; /* 上下に余白を追加し、中央揃え */
+  text-align: center; /* テキストを中央揃え */
+}
+
+.bitOperationButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+}
+
+.bitOperationButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.bitOperationButton:hover {
+  background-color: #0056b3;
+}
+
+.problemButtonContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 140pt); 
+  justify-content: center;
+  align-items: center;
+
+}
+
+.timeAttackButtonContainer {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.problemButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.timeAttackButton{
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 8px;
+}
+
+.returnToTimeAttackSelectionButton {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 8px;
+}
+
+.returnToProblemSelectionButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.returnContainer {
+    text-align: left;     /* 中央寄せ */
+    margin-top: 10px;       /* 上に余白 */
+}
+  
+
+.returnToTitleButton {
+  left: 10%;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+/* .problemModeButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+} */
+
+.problemModeButton {
+    width: 180px;
+    top: 30px;
+    /* height: 160px; */
+    position: relative;
+    display: inline-block;
+    font-weight: bold;
+    text-decoration: none;
+    color: #FFF;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.73);
+    padding: 0.3em 0.5em;
+    background: #00bcd4;
+    border-top: solid 3px #00a3d4;
+    border-bottom: solid 3px #00a3d4; 
+} 
+.problemModeButton:hover {
+    text-shadow: -6px 0px 15px rgba(255, 255, 240, 0.83),
+                 6px 0px 15px rgba(255, 255, 240, 0.83);
+}
+
+/* .timeAttackModeButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+} */
+
+.timeAttackModeButton {
+    width: 180px;
+    top: 30px;
+    position: relative;
+    display: inline-block;
+    font-weight: bold;
+    text-decoration: none;
+    color: #FFF;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.73);
+    padding: 1em 0.5em;
+    background: #00bcd4;
+    border-top: solid 3px #00a3d4;
+    border-bottom: solid 3px #00a3d4; 
+} 
+.timeAttackModeButton:hover {
+    text-shadow: -6px 0px 15px rgba(255, 255, 240, 0.83),
+                 6px 0px 15px rgba(255, 255, 240, 0.83);
+}
+
+.undoButtonDisabled {
+  padding: 8px 16px;
+  background-color: #444444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.undoButtonEnabled {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.retryButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+}

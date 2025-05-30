@@ -1,0 +1,11 @@
+5
+2
+00111
+00101
+4
+or 10101
+xor 10110
+cyclic_rshift
+cyclic_lshift
+
+\\3 2

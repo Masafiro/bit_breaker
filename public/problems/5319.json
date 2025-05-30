@@ -1,0 +1,26 @@
+{
+    "problem": {
+      "bit_length": 5,
+      "start": "10010",
+      "target": "10000",
+      "operation_count": 4,
+      "operations": [
+        {
+          "operation_type": "not"
+        },
+        {
+          "operation_type": "and",
+          "parameter": "10110"
+        },
+        {
+          "operation_type": "xor",
+          "parameter": "11100"
+        },
+        {
+          "operation_type": "cyclic-rshift"
+        }
+      ],
+      "minumum_moves": 3
+    }
+  }
+  

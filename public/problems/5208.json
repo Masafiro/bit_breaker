@@ -1,0 +1,23 @@
+{
+    "problem": {
+      "bit_length": 5,
+      "start": "11000",
+      "target": "00100",
+      "operation_count": 3,
+      "operations": [
+        {
+          "operation_type": "not"
+        },
+        {
+          "operation_type": "or",
+          "parameter": "10011"
+        },
+        {
+          "operation_type": "xor",
+          "parameter": "00111"
+        }
+      ],
+      "minumum_moves": 2
+    }
+  }
+  
