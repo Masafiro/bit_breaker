@@ -57,12 +57,6 @@ function OperateBit(state: Bit, action: BitOperation): Bit {
       ).join("");
       return newState;
     }
-    case "xnor": {
-      const newState = state.split("").map((bit, index) => {
-        return (bit === action.parameter[index]) ? "1" : "0";
-      }).join("");
-      return newState;
-    }
     case "not": {
       const newState = state.split("").map((bit) => {
         return (bit === "1") ? "0" : "1";
@@ -92,8 +86,6 @@ function getOperationDisplayName(operation: BitOperation): string {
       return `OR ${operation.parameter}`;
     case "xor":
       return `XOR ${operation.parameter}`;
-    case "xnor":
-      return `XNOR ${operation.parameter}`;
     case "not":
       return "NOT";
     case "cyclic-lshift":
@@ -349,6 +341,13 @@ function MinimumMovesDisplay({ minimumMoves } : { minimumMoves : number }){
   );
 }
 
+function SolvedProblemCountDisplay({ solvedProblemCount, problemCount } : { solvedProblemCount : number, problemCount: number }){
+  return (
+    <div>
+      解いた問題数: {solvedProblemCount}/{problemCount}
+    </div>
+  );
+}
 function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>}){
   useEffect(() => {
     if (isActive){
@@ -374,8 +373,19 @@ function ProblemModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setT
     </div>
   )
 }
+function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setTime, setStatus, solvedProblemCount, problemCount }: { minimumMoves: number, moveCount: number, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>, setStatus: React.Dispatch<React.SetStateAction<Status>> , solvedProblemCount: number, problemCount: number }){
+  return (
+    <div className="gameInfoLeft">
+      <SolvedProblemCountDisplay solvedProblemCount={solvedProblemCount} problemCount={problemCount} />
+      <MinimumMovesDisplay minimumMoves={minimumMoves} />
+      <MoveCounter moveCount={moveCount} />
+      <Timer isActive={isActive} time={time} setTime={setTime} />
+      <ReturnToProblemSelectionButton setStatus={setStatus} />
+    </div>
+  )
+}
 
-function ProblemModeGameInfoRight({ bitHistory, dispatchbitHistory, problem }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem}){
+function GameInfoRight({ bitHistory, dispatchbitHistory, problem }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem}){
   return (
     <div className="gameInfoRight">
       <BitDisplay currentBits={problem.target} />
@@ -429,7 +439,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   return (
     <div className="gameInfo">
       <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={bitHistory[bitHistory.length - 1] !== problem.target} time={time} setTime={setTime} setStatus={setStatus}/>
-      <ProblemModeGameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
     </div>
   );
 }
@@ -516,32 +526,11 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   }, [bitHistory]);
 
   return (
-    <div>
-      解いた問題数: {solvedProblemCount}
-      <br/>
-      問題数: {timeAttack.problem_count}
-      <br/>
-      <div>
-        Target: {problem.target}
-      </div>
-      <BitDisplay currentBits={bitHistory[bitHistory.length - 1]} />
-      <MoveCounter moveCount={bitHistory.length - 1} />
-      <Timer isActive={timeAttack.problem_count == 0 || solvedProblemCount < timeAttack.problem_count} time={time} setTime={setTime} />
-      <BitOperationButtonContainer>
-        {problem.operations.map((operation, index) => (
-          <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} />
-        ))}
-      </BitOperationButtonContainer>
-      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
-      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
-      <div>
-        <ReturnToTimeAttackSelectionButton setStatus={setStatus} />
-      </div>
-      <div>
-        bitHistory: {bitHistory.toString()}
-      </div> 
+    <div className="gameInfo">
+      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={timeAttack.problem_count == 0 || solvedProblemCount < timeAttack.problem_count} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
     </div>
-  )
+  );
 }
 function Title(){
   return (
