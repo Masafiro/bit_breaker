@@ -6,13 +6,13 @@
     "operations": [
       {
         "operation_type": "and",
-        "parameter": "00111"
+        "parameter": "11110"
       },
       {
-        "operation_type": "cyclic_lshift"
+        "operation_type": "cyclic-lshift"
       }
     ],
-    "start": "10001",
-    "target": "00011"
+    "start": "01111",
+    "target": "11110"
   }
 }

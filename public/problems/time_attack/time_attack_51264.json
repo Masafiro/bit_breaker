@@ -6,14 +6,14 @@
     "operations": [
       {
         "operation_type": "xor",
-        "parameter": "01100"
+        "parameter": "11011"
       },
       {
-        "operation_type": "xor",
-        "parameter": "11011"
+        "operation_type": "and",
+        "parameter": "10100"
       }
     ],
-    "start": "10100",
-    "target": "11000"
+    "start": "00010",
+    "target": "00000"
   }
 }

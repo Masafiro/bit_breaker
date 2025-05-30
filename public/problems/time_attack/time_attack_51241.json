@@ -6,13 +6,14 @@
     "operations": [
       {
         "operation_type": "and",
-        "parameter": "10110"
+        "parameter": "10101"
       },
       {
-        "operation_type": "not"
+        "operation_type": "and",
+        "parameter": "01100"
       }
     ],
-    "start": "11101",
-    "target": "00010"
+    "start": "11100",
+    "target": "10100"
   }
 }

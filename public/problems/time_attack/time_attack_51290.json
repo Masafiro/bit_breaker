@@ -9,10 +9,10 @@
       },
       {
         "operation_type": "or",
-        "parameter": "11100"
+        "parameter": "00101"
       }
     ],
-    "start": "10000",
-    "target": "01111"
+    "start": "10100",
+    "target": "10101"
   }
 }
