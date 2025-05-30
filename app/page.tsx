@@ -82,6 +82,29 @@ function OperateBit(state: Bit, action: BitOperation): Bit {
   }
 }
 
+function getOperationDisplayName(operation: BitOperation): string {
+  switch (operation.operation_type) {
+    case "set":
+      return `SET ${operation.parameter}`;
+    case "and":
+      return `AND ${operation.parameter}`;
+    case "or":
+      return `OR ${operation.parameter}`;
+    case "xor":
+      return `XOR ${operation.parameter}`;
+    case "xnor":
+      return `XNOR ${operation.parameter}`;
+    case "not":
+      return "NOT";
+    case "cyclic-lshift":
+      return "L-SHIFT";
+    case "cyclic-rshift":
+      return "R-SHIFT";
+    default:
+      throw new Error("Unknown operation type");
+  }
+}
+
 function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitHistory {
   switch (action.operation_type) {
     case "append": {
@@ -112,8 +135,7 @@ function BitOperationButton({ dispatchbitHistory, operation }: { dispatchbitHist
     <button className="bitOperationButton" onClick={() => {
       dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
     }}>
-      {operation.operation_type}
-      {"parameter" in operation && ` ${operation.parameter}`}
+      {getOperationDisplayName(operation)}
     </button>
   );
 }
