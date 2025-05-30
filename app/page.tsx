@@ -220,14 +220,14 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
   if (bestTime === null){
     return (
       <div>
-        <button className="timeAttackButton" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
+        <button className="timeAttackButtonUnplayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
           {timeAttackName}
         </button>
       </div>
     );
   } else {
     return (
-      <button className="timeAttackButton" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
+      <button className="timeAttackButtonPlayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
         {timeAttackName} (ベストタイム: {Number(bestTime) / 1000} 秒)
       </button>
     );
