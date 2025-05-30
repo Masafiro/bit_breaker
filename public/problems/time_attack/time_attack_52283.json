@@ -8,11 +8,10 @@
         "operation_type": "not"
       },
       {
-        "operation_type": "xor",
-        "parameter": "01100"
+        "operation_type": "cyclic-rshift"
       }
     ],
-    "start": "10111",
-    "target": "00100"
+    "start": "01110",
+    "target": "11000"
   }
 }
