@@ -431,7 +431,7 @@ function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, s
       <MinimumMovesDisplay minimumMoves={minimumMoves} />
       <MoveCounter moveCount={moveCount} />
       <Timer isActive={isActive} time={time} setTime={setTime} />
-      <ReturnToProblemSelectionButton setStatus={setStatus} />
+      <ReturnToTimeAttackSelectionButton setStatus={setStatus} />
     </div>
   )
 }
