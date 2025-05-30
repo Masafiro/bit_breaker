@@ -8,10 +8,10 @@
         "operation_type": "not"
       },
       {
-        "operation_type": "cyclic_rshift"
+        "operation_type": "cyclic-rshift"
       }
     ],
-    "start": "00010",
-    "target": "01111"
+    "start": "01000",
+    "target": "11101"
   }
 }

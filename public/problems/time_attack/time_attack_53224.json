@@ -8,11 +8,10 @@
         "operation_type": "not"
       },
       {
-        "operation_type": "or",
-        "parameter": "01010"
+        "operation_type": "cyclic-lshift"
       }
     ],
-    "start": "01011",
-    "target": "00001"
+    "start": "11110",
+    "target": "00100"
   }
 }
