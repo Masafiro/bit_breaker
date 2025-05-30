@@ -585,33 +585,6 @@ function Title(){
   );
 }
 
-function DebugInfo({ status } : {status: Status }){
-  switch (status.status_type){
-    case "ProblemSelectionScreen":
-      return (
-        <div>
-          status_type: {status.status_type}
-        </div>
-      );
-    case "ProblemModeGameScreen":
-      return (
-        <div>
-          status_type: {status.status_type}
-          <br/>
-          problem_file: {status.problem_file}
-        </div>
-      );
-    case "TimeAttackModeGameScreen":
-      return (
-        <div>
-          status_type: {status.status_type}
-          <br/>
-          time_attack_file: {status.time_attack_file}
-        </div>
-      );
-  }
-}
-
 export default function Home() {
   const [status, setStatus] = useState<Status>({status_type: "TitleScreen"});
   switch (status.status_type){
@@ -627,7 +600,6 @@ export default function Home() {
         <div>
           <Title />
           <ProblemSelection setStatus={setStatus} />
-          <DebugInfo status={status} />
         </div>
       );
     case "TimeAttackSelectionScreen":
@@ -635,7 +607,6 @@ export default function Home() {
         <div>
           <Title />
           <TimeAttackSelection setStatus={setStatus} />
-          <DebugInfo status={status} />
         </div>
       );
     case "ProblemModeGameScreen":
@@ -643,7 +614,6 @@ export default function Home() {
         <div>
           <Title />
           <ProblemModeGame setStatus={setStatus} problemFileName={status.problem_file}/>
-          <DebugInfo status={status} />
         </div>
       );
     case "TimeAttackModeGameScreen":
@@ -651,7 +621,6 @@ export default function Home() {
         <div>
           <Title />
           <TimeAttackModeGame setStatus={setStatus} timeAttackFileName={status.time_attack_file}/>
-          <DebugInfo status={status} />
         </div>
       );
   }
