@@ -4,6 +4,7 @@ import React, { useEffect, useState, useReducer } from "react";
 import './globals.css';
 import { time } from "console";
 import next from "next";
+import { ReadStream } from "fs";
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -122,10 +123,12 @@ function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitH
   }
 }
 
-function BitOperationButton({ dispatchbitHistory, operation }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation }) {
+function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation, isActive: boolean }) {
   return (
     <button className="bitOperationButton" onClick={() => {
-      dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
+      if (isActive){
+        dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
+      }
     }}>
       {getOperationDisplayName(operation)}
     </button>
@@ -392,15 +395,17 @@ function SolvedProblemCountDisplay({ solvedProblemCount, problemCount } : { solv
     </div>
   );
 }
-function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>}){
+function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }){
+  const [time2, setTime2] = useState<number>(0);
   useEffect(() => {
-    if (isActive){
-      const timer = setTimeout(() => {
-        setTime(time + 100);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [time]);
+    const timer = setTimeout(() => {
+      setTime2(time2 + 10);
+      if (isActive){
+        setTime(time + 10);
+      }
+    }, 10);
+    return () => clearTimeout(timer);
+  }, [time2]);
   return (
     <div>
       タイム: {time / 1000}秒
@@ -429,14 +434,14 @@ function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, s
   )
 }
 
-function GameInfoRight({ bitHistory, dispatchbitHistory, problem }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem}){
+function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean }){
   return (
     <div className="gameInfoRight">
       <BitDisplay currentBits={problem.target} />
       <BitDisplay currentBits={bitHistory[bitHistory.length - 1]} />
       <BitOperationButtonContainer>
         {problem.operations.map((operation, index) => (
-          <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} />
+          <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} isActive={isActive} />
         ))}
       </BitOperationButtonContainer>
       <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} />
@@ -448,6 +453,8 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [time, setTime] = useState<number>(0);
+
+  let isActive = (problem.bit_length > 0 && bitHistory.length > 0 && bitHistory[bitHistory.length - 1] !== problem.target);
 
   useEffect(() => {
     async function fetchProblem() {
@@ -485,8 +492,8 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   return (
     <div className="gameInfo">
-      <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={bitHistory[bitHistory.length - 1] !== problem.target} time={time} setTime={setTime} setStatus={setStatus}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
+      <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus}/>
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
     </div>
   );
 }
@@ -500,6 +507,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
+
+  let isActive = timeAttack.problem_count > 0 && currentProblem === solvedProblemCount + 1;
 
   useEffect(() => {
     async function fetchTimeAttack() {
@@ -574,8 +583,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   return (
     <div className="gameInfo">
-      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={timeAttack.problem_count == 0 || solvedProblemCount < timeAttack.problem_count} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} />
+      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={bitHistory.length - 1} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
     </div>
   );
 }
