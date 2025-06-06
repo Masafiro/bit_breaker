@@ -335,10 +335,7 @@ body {
     display: block;  
     margin: 0 auto;  
     margin-top: -20px;
-    margin-bottom: -30px;
-
-    position: relative;  
-    left: 130px;    
+    margin-bottom: -30px;  
 }
 
 .gameInfo{
