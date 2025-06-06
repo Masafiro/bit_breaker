@@ -273,14 +273,14 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
 function ProblemModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
     return (
         <button className="problemModeButton" onClick={() => setStatus({status_type: "ProblemSelectionScreen"})}>
-          問題を解く
+          熟考モード
         </button>
     );
 }
 function TimeAttackModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
     return (
         <button className="timeAttackModeButton" onClick={() => setStatus({status_type: "TimeAttackSelectionScreen"})}>
-          タイムアタックをする
+          タイムアタックモード
         </button>
     );
 }
