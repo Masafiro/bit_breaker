@@ -281,6 +281,26 @@ body {
   margin: 8px;
 }
 
+.css-image {
+    display: block;  
+    margin: 0 auto;  
+    margin-top: -20px;
+    margin-bottom: -30px;
+
+    /* position: relative;  
+    left: 130px;    */
+}
+
+.css-image-problem { 
+    display: block;  
+    margin: 0 auto;  
+    margin-top: -20px;
+    margin-bottom: -30px;
+
+    position: relative;  
+    left: 130px;    
+}
+
 .gameInfo{
   display: flex;
   flex-wrap:no-wrap;
