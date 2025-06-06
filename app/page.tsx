@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer} from "react";
 import './globals.css';
 import { time } from "console";
 import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
+import { useAudio } from "./hooks/useAudio";
 
 const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
@@ -130,11 +131,11 @@ function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitH
 }
 
 function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation, isActive: boolean }) {
+  const operationAudioPlay = useAudio(operationAudioPath);
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
-        const operationAudio = new Audio(operationAudioPath);
-        operationAudio.play();
+        operationAudioPlay();
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
       }
     }}>
@@ -483,6 +484,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [time, setTime] = useState<number>(0);
+  const correctAudioPlay = useAudio(correctAudioPath);
 
   let isActive = (problem.bit_length > 0 && bitHistory.length > 0 && bitHistory[bitHistory.length - 1] !== problem.target);
 
@@ -511,8 +513,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
     if (typeof window !== "undefined"){
-      const correctAudio = new Audio(correctAudioPath);
-      correctAudio.play();
+      correctAudioPlay();
     }
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
@@ -539,6 +540,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
   const [timeActive, setTimeActive] = useState<boolean>(false);
+  const correctAudioPlay = useAudio(correctAudioPath);
+  const setProblemAudioPlay = useAudio(setProblemAudioPath);
 
   useEffect(() => {
     async function fetchTimeAttack() {
@@ -573,8 +576,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
-        const setProblemAudio = new Audio(setProblemAudioPath);
-        setProblemAudio.play();
+        setProblemAudioPlay();
         const data = await response.json();
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
@@ -595,8 +597,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      const correctAudio = new Audio(correctAudioPath);
-      correctAudio.play();
+      correctAudioPlay();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
