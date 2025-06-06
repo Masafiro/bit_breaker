@@ -5,6 +5,7 @@ import './globals.css';
 import { time } from "console";
 import next from "next";
 import { ReadStream } from "fs";
+import Image from 'next/image'
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -610,10 +611,19 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 function Title(){
   return (
     <div>
-      <h1 className="title">Bit Breaker</h1>
+      {/* <h1 className="title">Bit Breaker</h1> */}
+      <Image src="/true_transparent.png" alt="image description" width={400} height={130}  className="css-image"/>
     </div>
   );
 }
+function TitleProblem(){
+    return (
+      <div>
+        {/* <h1 className="title">Bit Breaker</h1> */}
+        <Image src="/true_transparent.png" alt="image description" width={400} height={130}  className="css-image-problem"/>
+      </div>
+    );
+  }
 
 export default function Home() {
   const [status, setStatus] = useState<Status>({status_type: "TitleScreen"});
@@ -642,14 +652,14 @@ export default function Home() {
     case "ProblemModeGameScreen":
       return (
         <div>
-          <Title />
+          <TitleProblem />
           <ProblemModeGame setStatus={setStatus} problemFileName={status.problem_file}/>
         </div>
       );
     case "TimeAttackModeGameScreen":
       return (
         <div>
-          <Title />
+          <TitleProblem />
           <TimeAttackModeGame setStatus={setStatus} timeAttackFileName={status.time_attack_file}/>
         </div>
       );

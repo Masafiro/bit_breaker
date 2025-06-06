@@ -5,7 +5,7 @@
     "operation_count": 2,
     "operations": [
       {
-        "operation_type": "cyclic_lshift"
+        "operation_type": "cyclic-lshift"
       },
       {
         "operation_type": "and",

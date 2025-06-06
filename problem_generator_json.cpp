@@ -75,7 +75,7 @@ using json = nlohmann::json;
 // ex) filename = "problem", filename_offset = 0 のときに3つの問題を作ると，
 // ファイルネームはそれぞれ problem1, problem2, problme3 となる．
 string filename = "";
-int filename_offset = 0;
+int filename_offset = 50;
 // 出力のしすぎを防ぐ
 const int problemnum_limit = 3000;
 
