@@ -5,14 +5,15 @@
     "operation_count": 2,
     "operations": [
       {
-        "operation_type": "cyclic-rshift"
+        "operation_type": "xor",
+        "parameter": "11110"
       },
       {
-        "operation_type": "xor",
-        "parameter": "10100"
+        "operation_type": "and",
+        "parameter": "00010"
       }
     ],
     "start": "11001",
-    "target": "00111"
+    "target": "11100"
   }
 }
