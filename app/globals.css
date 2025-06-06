@@ -3,6 +3,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light dark;
+}
+
+:root[color-scheme="dark"] {
+    color-scheme: dark;
+}
+
+:root[color-scheme="light"] {
+    color-scheme: light;
 }
 
 @theme inline {
@@ -38,7 +47,7 @@ body {
   align-items: center; /* 垂直方向に中央揃え */
   font-size: 2.5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
-  color: #333; /* テキストの色 */
+  color: light-dark(#333, #DDD); /* テキストの色 */
   border-radius: 8px; /* 角を丸くする */
   padding: 16px; /* 内側の余白 */
   width: 80%; /* コンテナの幅を調整 */
@@ -53,7 +62,7 @@ body {
   font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
   color: #333; /* テキストの色 */
-  background-color: #f0f0f0; /* 背景色 */
+  background-color: #DDDDDD; /* 背景色 */
   border: 2px solid #007bff; /* 枠線 */
   border-radius: 8px; /* 角を丸くする */
   padding: 2px; /* 内側の余白 */
