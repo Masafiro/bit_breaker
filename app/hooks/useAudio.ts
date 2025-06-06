@@ -1,30 +1,34 @@
 import { useRef, useEffect } from "react";
 
-export function useAudio(audioPath: string) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+export function useAudio(audioPath: string, poolSize = 3) {
+  const poolRef = useRef<HTMLAudioElement[]>([]);
+  const idxRef = useRef(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      audioRef.current = new Audio(audioPath);
-      // iOS対策: ユーザー操作で一度だけ再生・停止
+      poolRef.current = Array.from({ length: poolSize }, () => new Audio(audioPath));
+      // iOS対策: ユーザー操作で一度だけ全Audioを再生・停止
       const unlock = () => {
-        audioRef.current?.play().catch(() => {});
-        audioRef.current?.pause();
-        audioRef.current!.currentTime = 0;
+        poolRef.current.forEach(audio => {
+          audio.play().catch(() => {});
+          audio.pause();
+          audio.currentTime = 0;
+        });
         window.removeEventListener("touchstart", unlock);
         window.removeEventListener("mousedown", unlock);
       };
       window.addEventListener("touchstart", unlock, { once: true });
       window.addEventListener("mousedown", unlock, { once: true });
     }
-  }, [audioPath]);
+  }, [audioPath, poolSize]);
 
-  // 再生関数
   const play = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
+    if (poolRef.current.length > 0) {
+      idxRef.current = (idxRef.current + 1) % poolRef.current.length;
+      const audio = poolRef.current[idxRef.current];
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play();
     }
   };
 
