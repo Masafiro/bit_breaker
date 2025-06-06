@@ -32,19 +32,33 @@ body {
   text-align: center;
 }
 
-.bitDisplay {
+.bitDisplayTarget {
   display: flex; /* 中央揃えのためにflexboxを使用 */
   justify-content: center; /* 水平方向に中央揃え */
   align-items: center; /* 垂直方向に中央揃え */
-  font-size: 1.5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-size: 2.5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-weight: bold; /* 太字にして強調 */
+  color: #333; /* テキストの色 */
+  border-radius: 8px; /* 角を丸くする */
+  padding: 16px; /* 内側の余白 */
+  width: 80%; /* コンテナの幅を調整 */
+  margin: 0px auto -30px; /* 上下に余白を追加し、中央揃え */
+  text-align: center; /* テキストを中央揃え */
+}
+
+.bitDisplayCurrent {
+  display: flex; /* 中央揃えのためにflexboxを使用 */
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center; /* 垂直方向に中央揃え */
+  font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
   color: #333; /* テキストの色 */
   background-color: #f0f0f0; /* 背景色 */
   border: 2px solid #007bff; /* 枠線 */
   border-radius: 8px; /* 角を丸くする */
-  padding: 16px; /* 内側の余白 */
-  width: 50%; /* コンテナの幅を調整 */
-  margin: 16px auto; /* 上下に余白を追加し、中央揃え */
+  padding: 2px; /* 内側の余白 */
+  width: 80%; /* コンテナの幅を調整 */
+  margin: 10px auto 30px; /* 上下に余白を追加し、中央揃え */
   text-align: center; /* テキストを中央揃え */
 }
 
@@ -52,15 +66,15 @@ body {
   display: flex; /* 中央揃えのためにflexboxを使用 */
   justify-content: center; /* 水平方向に中央揃え */
   align-items: center; /* 垂直方向に中央揃え */
-  font-size: 1.5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
   color: #333; /* テキストの色 */
   background-color: #ffff00; /* 背景色 */
   border: 2px solid #007bff; /* 枠線 */
   border-radius: 8px; /* 角を丸くする */
-  padding: 16px; /* 内側の余白 */
-  width: 50%; /* コンテナの幅を調整 */
-  margin: 16px auto; /* 上下に余白を追加し、中央揃え */
+  padding: 2px; /* 内側の余白 */
+  width: 80%; /* コンテナの幅を調整 */
+  margin: 10px auto 30px; /* 上下に余白を追加し、中央揃え */
   text-align: center; /* テキストを中央揃え */
 }
 
@@ -78,7 +92,8 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
-  width: 120px;
+  width: 200px;
+  font-size: 1.7rem
 }
 
 .bitOperationButton:hover {
@@ -87,9 +102,10 @@ body {
 
 .problemButtonContainer {
   display: grid;
-  grid-template-columns: repeat(10, 40pt);
+  grid-template-columns: repeat(10, 60pt);
   justify-content: center;
   align-items: center;
+  row-gap: -20px;
 
 }
 
@@ -100,68 +116,77 @@ body {
 }
 
 .problemButtonSolvedMinimum {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   margin: 10px;
   background-color: #f5e900;
   color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 200%;
+  font-weight: bold;
 }
 
 .problemButtonSolved {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   margin: 10px;
   background-color: #7ae3ec;
   color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 200%;
+  font-weight: bold;
 }
 
 .problemButtonUnsolved {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   margin: 10px;
   background-color: #0062ff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 200%;
+  font-weight: bold;
 }
 
 
 .timeAttackButtonUnplayed{
-    padding: 12px 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 8px;
-  }
-  
-  .timeAttackButton{
-      padding: 12px 12px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin: 8px;
-    }
-  
-  .timeAttackButtonPlayed{
-      padding: 12px 12px;
-      background-color: #7ae3ec;
-      color: black;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin: 8px;
-    }
+  padding: 12px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+  font-size: 200%
+}
+
+.timeAttackButton{
+  padding: 12px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+  font-size: 200%
+}
+
+.timeAttackButtonPlayed{
+  padding: 12px 12px;
+  background-color: #7ae3ec;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 8px;
+  font-size: 200%
+}
 
 .returnToTimeAttackSelectionButton {
     padding: 8px 16px;
@@ -171,6 +196,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     margin: 8px;
+    font-size: 75%
 }
 
 .returnToProblemSelectionButton {
@@ -181,6 +207,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
+  font-size: 75%
 }
 
 .returnContainer {
@@ -198,6 +225,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
+  font-size: 150%
 }
 
 /* .problemModeButton {
@@ -259,6 +287,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
+  font-size: 150%
 }
 
 .undoButtonEnabled {
@@ -269,6 +298,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
+  font-size: 150%
 }
 
 .retryButton {
@@ -279,6 +309,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   margin: 8px;
+  font-size: 150%
 }
 
 .gameInfo{
@@ -287,11 +318,12 @@ body {
 }
 
 .gameInfoLeft{
-  width: 20%;
+  width: 30%;
   text-align: center;
+  font-size: 200%
 }
 .gameInfoRight{
-  width: 80%;
+  width: 70%;
 }
 
 .undoRetryButtonContainer{
