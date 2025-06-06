@@ -7,6 +7,8 @@ import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
 
+const correct_audio = new Audio("/audios/correct/correct037.mp3");
+
 type Bit = string;
 type bitHistory = Bit[];
 
@@ -503,6 +505,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   }, []);
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
+    correct_audio.play();
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
     } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
@@ -584,6 +587,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
+      correct_audio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
