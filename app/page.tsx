@@ -528,8 +528,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
-
-  let isActive = timeAttack.problem_count > 0 && bitHistory.length >= 1 && currentProblem === solvedProblemCount + 1;
+  const [timeActive, setTimeActive] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchTimeAttack() {
@@ -578,10 +577,12 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
       }
     };
     fetchProblem();
+    setTimeActive(true);
   }, [currentProblem]);
 
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
+      setTimeActive(false);
       const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
       correct_audio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
@@ -603,8 +604,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   return (
     <div className="gameInfo">
-      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
+      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={timeActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={timeActive} />
     </div>
   );
 }
