@@ -585,7 +585,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      const correctAudio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
+      const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
       correctAudio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
