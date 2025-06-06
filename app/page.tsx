@@ -7,7 +7,7 @@ import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
 
-const correct_audio = new Audio("/audios/correct/correct037.mp3");
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -481,7 +481,6 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
         console.log(`basepath: ${basePath}`); 
         const response = await fetch(`${basePath}/problems/${problemFileName}`);
         if (!response.ok) {
@@ -505,6 +504,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   }, []);
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
+    const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
     correct_audio.play();
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
@@ -536,8 +536,6 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     async function fetchTimeAttack() {
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-        console.log(`basepath: ${basePath}`); 
         const response = await fetch(`${basePath}/time_attack_data/${timeAttackFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
@@ -564,7 +562,6 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
     async function fetchProblem() {
       const problemIndex = Math.floor(Math.random() * timeAttack.problems.length);
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
         const response = await fetch(`${basePath}/problems/${timeAttack.problems[problemIndex]}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
@@ -587,6 +584,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
+      const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
       correct_audio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
