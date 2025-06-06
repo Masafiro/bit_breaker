@@ -567,7 +567,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
         dispatchbitHistory({ operation_type: "append", parameter: data.problem.start });
-        setTimeActive(false);
+        setTimeActive(true);
       } catch (error) {
         console.error("Error fetching problem file:", error);
         if (error instanceof Error) {
