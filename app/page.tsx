@@ -1,13 +1,30 @@
 'use client';
 
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer} from "react";
 import './globals.css';
 import { time } from "console";
 import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
+import { useAudio } from "./hooks/useAudio";
 
-const correct_audio = new Audio("/audios/correct/correct037.mp3");
+const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
+const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
+const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
+const navigationAudioPath: string = `${basePath}/audios/navigation/navigation34.mp3`;
+const undoAudioPath: string = `${basePath}/audios/undo/undo05.mp3`;
+const disabledAudioPath: string = `${basePath}/audios/disabled/disabled04.mp3`;
+
+const correctAudioVolume: number = 0.25;
+const setProblemAudioVolume: number = 0.3;
+const operationAudioVolume: number = 1.0;
+const navigationAudioVolume: number = 0.2;
+const undoAudioVolume: number = 0.2;
+const disabledAudioVolume: number = 0.15;
+
+const undoPenalty: number = 1000;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -127,10 +144,16 @@ function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitH
 }
 
 function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation, isActive: boolean }) {
+  const operationAudioPlay = useAudio(operationAudioPath);
+  const disabledAudioPlay = useAudio(disabledAudioPath);
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
+        operationAudioPlay(operationAudioVolume);
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
+      }
+      else {
+        disabledAudioPlay(disabledAudioVolume);
       }
     }}>
       {getOperationDisplayName(operation)}
@@ -146,8 +169,12 @@ function BitOperationButtonContainer({ children }: { children: React.ReactNode }
   );
 }
 
-function BitDisplayCurrent({ bits, correct }: { bits: Bit, correct: boolean }) {
-  if (correct){
+function BitDisplayCurrent({ bits, correct, isMinimum }: { bits: Bit, correct: boolean, isMinimum: boolean }) {
+  if (isMinimum && correct){
+    return (
+      <div className="bitDisplayMinimum"> {bits} </div>
+    )
+  } else if (correct){
     return (
       <div className="bitDisplayCorrect"> {bits} </div>
     )
@@ -161,13 +188,15 @@ function BitDisplayCurrent({ bits, correct }: { bits: Bit, correct: boolean }) {
 function BitDisplayTarget({ bits }: { bits: Bit }) {
   return (
     <div className="bitDisplayTarget"> {bits} </div>
-  )    
+  )
 }
 
-function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
+function UndoButton({ bitHistory, dispatchbitHistory, isActive, time, setTime} : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }) {
+  const undoAudioPlay = useAudio(undoAudioPath);
+  const disabledAudioPlay = useAudio(disabledAudioPath);
   if (bitHistory.length === 1){
     return (
-      <button className="undoButtonDisabled">
+      <button className="undoButtonDisabled" onClick={() => {disabledAudioPlay(disabledAudioVolume)}}> 
         1 手戻る
       </button>
     );
@@ -175,8 +204,14 @@ function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory:
     return (
       <button className="undoButtonEnabled" onClick={() => {
         if (isActive){
+          undoAudioPlay(undoAudioVolume);
           dispatchbitHistory({operation_type: "pop"});
-        }}
+          setTime(time => time + undoPenalty);
+        }
+        else {
+          disabledAudioPlay(disabledAudioVolume);
+        }
+      }
       }>
         1 手戻る
       </button>
@@ -198,11 +233,11 @@ function RetryButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory
   )
 }
 
-function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean}){
+function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive, time, setTime } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>}){
   return (
     <div className="undoRetryButtonContainer">
-      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} />
-      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} />
+      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
+      {/* <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} /> */}
     </div>
   )
 }
@@ -216,21 +251,31 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
 }
 
 function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   if (localStorage.getItem(problemFile) == "Solved"){
     return (
-      <button className="problemButtonSolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonSolved" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
   } else if (localStorage.getItem(problemFile) == "SolvedMinimum"){
     return (
-      <button className="problemButtonSolvedMinimum" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonSolvedMinimum" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
   } else {
     return (
-      <button className="problemButtonUnsolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonUnsolved" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
@@ -247,34 +292,49 @@ function TimeAttackButtonContainer({children}: {children: React.ReactNode }) {
 
 function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeAttackName: string, timeAttackFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
   const bestTime = localStorage.getItem(timeAttackFile);
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   if (bestTime === null){
     return (
       <div>
-        <button className="timeAttackButtonUnplayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
-          {timeAttackName}
+        <button className="timeAttackButtonUnplayed" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
+        }}>
+          {timeAttackName} (ベストタイム: 999.99 秒)
         </button>
       </div>
     );
   } else {
     return (
-      <button className="timeAttackButtonPlayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
-        {timeAttackName} (ベストタイム: {Number(bestTime) / 1000} 秒)
+      <button className="timeAttackButtonPlayed" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
+      }}>
+        {timeAttackName} (ベストタイム: {(Number(bestTime) / 1000).toFixed(2)} 秒)
       </button>
     );
   }
 }
 
 function ProblemModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-        <button className="problemModeButton" onClick={() => setStatus({status_type: "ProblemSelectionScreen"})}>
-          問題を解く
+        <button className="problemModeButton" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "ProblemSelectionScreen"})
+        }}>
+          熟考モード
         </button>
     );
 }
 function TimeAttackModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-        <button className="timeAttackModeButton" onClick={() => setStatus({status_type: "TimeAttackSelectionScreen"})}>
-          タイムアタックをする
+        <button className="timeAttackModeButton" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "TimeAttackSelectionScreen"})
+        }}>
+          タイムアタックモード
         </button>
     );
 }
@@ -289,7 +349,6 @@ function ModeSelection({setStatus}: {setStatus: React.Dispatch<React.SetStateAct
 
 function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetStateAction<Status>>}) {
   const solvedproblem1 = localStorage.getItem('problem1.json');
-  console.log(solvedproblem1);
   return (
     <div>
       <ProblemButtonContainer>
@@ -352,16 +411,24 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
 }
 
 function ReturnToProblemSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   return (
-    <button className="returnToProblemSelectionButton" onClick={() => setStatus({status_type: "ProblemSelectionScreen"})}>
+    <button className="returnToProblemSelectionButton" onClick={() => {
+      navigationAudioPlay(navigationAudioVolume), 
+      setStatus({status_type: "ProblemSelectionScreen"})
+    }}>
       戻る
     </button>
   )
 }
 
 function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-      <button className="returnToTimeAttackSelectionButton" onClick={() => setStatus({status_type: "TimeAttackSelectionScreen"})}>
+      <button className="returnToTimeAttackSelectionButton" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TimeAttackSelectionScreen"})
+      }}>
         戻る
       </button>
     )
@@ -369,8 +436,12 @@ function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.D
   
 
 function ReturnToTitleButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-      <button className="returnToTitleButton" onClick={() => setStatus({status_type: "TitleScreen"})}>
+      <button className="returnToTitleButton" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TitleScreen"})
+      }}>
         戻る
       </button>     
     )
@@ -420,16 +491,16 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   const [time2, setTime2] = useState<number>(0);
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTime2(time2 + 10);
+      setTime2(time2 => time2 + 10);
       if (isActive){
-        setTime(time + 10);
+        setTime(time => time + 10);
       }
     }, 10);
     return () => clearTimeout(timer);
   }, [time2]);
   return (
     <div>
-      タイム: {(time * 1.25  / 1000 ).toFixed(2)}秒
+      タイム: {(time * 1.111 / 1000).toFixed(2)}秒
     </div>
   )
 }
@@ -444,7 +515,6 @@ function ProblemModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setT
   )
 }
 function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setTime, setStatus, solvedProblemCount, problemCount }: { minimumMoves: number, moveCount: number, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>, setStatus: React.Dispatch<React.SetStateAction<Status>> , solvedProblemCount: number, problemCount: number }){
-  console.log(moveCount);
   return (
     <div className="gameInfoLeft">
       <SolvedProblemCountDisplay solvedProblemCount={solvedProblemCount} problemCount={problemCount} />
@@ -456,17 +526,18 @@ function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, s
   )
 }
 
-function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean }){
+function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive, time, setTime }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }){
+  console.log(bitHistory.length, problem.minimum_moves);
   return (
     <div className="gameInfoRight">
       <BitDisplayTarget bits={problem.target} />
-      <BitDisplayCurrent bits={bitHistory[bitHistory.length - 1]} correct={bitHistory[bitHistory.length - 1] === problem.target}/>
+      <BitDisplayCurrent bits={bitHistory[bitHistory.length - 1]} correct={bitHistory[bitHistory.length - 1] === problem.target} isMinimum={problem.minimum_moves === bitHistory.length - 1}/>
       <BitOperationButtonContainer>
         {problem.operations.map((operation, index) => (
           <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} isActive={isActive} />
         ))}
       </BitOperationButtonContainer>
-      <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive}/>
+      <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
     </div>
   )
 }
@@ -475,21 +546,19 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [time, setTime] = useState<number>(0);
+  const correctAudioPlay = useAudio(correctAudioPath);
 
   let isActive = (problem.bit_length > 0 && bitHistory.length > 0 && bitHistory[bitHistory.length - 1] !== problem.target);
 
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-        console.log(`basepath: ${basePath}`); 
         const response = await fetch(`${basePath}/problems/${problemFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         setProblem(data.problem);
-        console.log(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
         dispatchbitHistory({ operation_type: "append", parameter: data.problem.start });
       } catch (error) {
@@ -505,7 +574,9 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   }, []);
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
-    correct_audio.play();
+    if (typeof window !== "undefined"){
+      correctAudioPlay(correctAudioVolume);
+    }
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
     } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
@@ -516,7 +587,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   return (
     <div className="gameInfo">
       <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} time={time} setTime={setTime} />
     </div>
   );
 }
@@ -526,25 +597,24 @@ type TimeAttack = {problems: string[], problem_count: number}
 function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: React.Dispatch<React.SetStateAction<Status>>, timeAttackFileName: string}) {
   const [timeAttack, setTimeAttack] = useState<TimeAttack>({problems: [], problem_count: 0});
   const [solvedProblemCount, setSolvedProblemCount] = useState<number>(0);
-  const [currentProblem, setcurrentProblem] = useState<number>(0);
+  const [currentProblem, setCurrentProblem] = useState<number>(0);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
-
-  let isActive = timeAttack.problem_count > 0 && currentProblem === solvedProblemCount + 1;
+  const [timeActive, setTimeActive] = useState<boolean>(false);
+  const correctAudioPlay = useAudio(correctAudioPath);
+  const setProblemAudioPlay = useAudio(setProblemAudioPath);
 
   useEffect(() => {
     async function fetchTimeAttack() {
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-        console.log(`basepath: ${basePath}`); 
         const response = await fetch(`${basePath}/time_attack_data/${timeAttackFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         setTimeAttack(data);
-        setcurrentProblem(1);
+        setCurrentProblem(1);
       } catch (error) {
         console.error("Error fetching problem file:", error);
         if (error instanceof Error) {
@@ -564,15 +634,16 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
     async function fetchProblem() {
       const problemIndex = Math.floor(Math.random() * timeAttack.problems.length);
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
         const response = await fetch(`${basePath}/problems/${timeAttack.problems[problemIndex]}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
+        setProblemAudioPlay(setProblemAudioVolume);
         const data = await response.json();
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
         dispatchbitHistory({ operation_type: "append", parameter: data.problem.start });
+        setTimeActive(true);
       } catch (error) {
         console.error("Error fetching problem file:", error);
         if (error instanceof Error) {
@@ -587,28 +658,29 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
-      correct_audio.play();
+      setTimeActive(false);
+      correctAudioPlay(correctAudioVolume);
       const nextSolvedProblemCount = solvedProblemCount + 1;
-      setSolvedProblemCount(nextSolvedProblemCount);
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
-          setcurrentProblem(nextSolvedProblemCount + 1);
+          setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
-        const solveTime = time;
+        const solveTime = time * 1.111 +10;
         if (localStorage.getItem(timeAttackFileName) == null){
           localStorage.setItem(timeAttackFileName, solveTime.toString());
         } else {
           localStorage.setItem(timeAttackFileName, Math.min(Number(localStorage.getItem(timeAttackFileName)), solveTime).toString())
         }
       }
+      setSolvedProblemCount(nextSolvedProblemCount);
     }
   }, [bitHistory]);
 
   return (
     <div className="gameInfo">
-      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
+      <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={timeActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={timeActive} time={time} setTime={setTime} />
     </div>
   );
 }

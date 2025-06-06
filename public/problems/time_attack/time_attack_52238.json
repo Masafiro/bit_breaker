@@ -5,13 +5,14 @@
     "operation_count": 2,
     "operations": [
       {
-        "operation_type": "cyclic-rshift"
+        "operation_type": "and",
+        "parameter": "11100"
       },
       {
-        "operation_type": "cyclic-lshift"
+        "operation_type": "not"
       }
     ],
-    "start": "00011",
+    "start": "00101",
     "target": "11000"
   }
 }

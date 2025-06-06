@@ -78,7 +78,23 @@ body {
   font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
   color: #333; /* テキストの色 */
-  background-color: #ffff00; /* 背景色 */
+  background-color: #7ae3ec; /* 背景色 */
+  border: 2px solid #007bff; /* 枠線 */
+  border-radius: 8px; /* 角を丸くする */
+  padding: 2px; /* 内側の余白 */
+  width: 80%; /* コンテナの幅を調整 */
+  margin: 10px auto 30px; /* 上下に余白を追加し、中央揃え */
+  text-align: center; /* テキストを中央揃え */
+}
+
+.bitDisplayMinimum {
+  display: flex; /* 中央揃えのためにflexboxを使用 */
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center; /* 垂直方向に中央揃え */
+  font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-weight: bold; /* 太字にして強調 */
+  color: #333; /* テキストの色 */
+  background-color: #f5e900; /* 背景色 */
   border: 2px solid #007bff; /* 枠線 */
   border-radius: 8px; /* 角を丸くする */
   padding: 2px; /* 内側の余白 */
@@ -111,7 +127,7 @@ body {
 
 .problemButtonContainer {
   display: grid;
-  grid-template-columns: repeat(10, 60pt);
+  grid-template-columns: repeat(10, 50pt);
   justify-content: center;
   align-items: center;
   row-gap: -20px;
@@ -125,58 +141,47 @@ body {
 }
 
 .problemButtonSolvedMinimum {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin: 10px;
   background-color: #f5e900;
   color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 200%;
+  font-size: 160%;
   font-weight: bold;
 }
 
 .problemButtonSolved {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin: 10px;
   background-color: #7ae3ec;
   color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 200%;
+  font-size: 160%;
   font-weight: bold;
 }
 
 .problemButtonUnsolved {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin: 10px;
   background-color: #0062ff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 200%;
+  font-size: 160%;
   font-weight: bold;
 }
 
 
 .timeAttackButtonUnplayed{
-  padding: 12px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 8px;
-  font-size: 200%
-}
-
-.timeAttackButton{
-  padding: 12px 12px;
+  padding: 12px 30px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -187,7 +192,7 @@ body {
 }
 
 .timeAttackButtonPlayed{
-  padding: 12px 12px;
+  padding: 12px 30px;
   background-color: #7ae3ec;
   color: black;
   border: none;
@@ -335,7 +340,7 @@ body {
     display: block;  
     margin: 0 auto;  
     margin-top: -20px;
-    margin-bottom: -30px;  
+    margin-bottom: -30px;
 }
 
 .gameInfo{

@@ -5,14 +5,15 @@
     "operation_count": 2,
     "operations": [
       {
-        "operation_type": "not"
+        "operation_type": "xor",
+        "parameter": "10111"
       },
       {
-        "operation_type": "and",
-        "parameter": "11011"
+        "operation_type": "or",
+        "parameter": "01001"
       }
     ],
-    "start": "11000",
-    "target": "11100"
+    "start": "00110",
+    "target": "01110"
   }
 }
