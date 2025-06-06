@@ -8,23 +8,23 @@ import { ReadStream } from "fs";
 import Image from 'next/image'
 import { useAudio } from "./hooks/useAudio";
 
-const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE_PATH: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
-const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
-const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
-const navigationAudioPath: string = `${basePath}/audios/navigation/navigation34.mp3`;
-const undoAudioPath: string = `${basePath}/audios/undo/undo05.mp3`;
-const disabledAudioPath: string = `${basePath}/audios/disabled/disabled04.mp3`;
+const CORRECT_AUDIO_PATH: string = `${BASE_PATH}/audios/correct/correct037.mp3`;
+const SET_PROBLEM_AUDIO_PATH: string = `${BASE_PATH}/audios/set_problem/set_problem28.mp3`;
+const OPERATION_AUDIO_PATH: string = `${BASE_PATH}/audios/operation/operation06.mp3`;
+const NAVIGATION_AUDIO_PATH: string = `${BASE_PATH}/audios/navigation/navigation34.mp3`;
+const UNDO_AUDIO_PATH: string = `${BASE_PATH}/audios/undo/undo05.mp3`;
+const DISABLED_AUDIO_PATH: string = `${BASE_PATH}/audios/disabled/disabled04.mp3`;
 
-const correctAudioVolume: number = 0.25;
-const setProblemAudioVolume: number = 0.3;
-const operationAudioVolume: number = 1.0;
-const navigationAudioVolume: number = 0.2;
-const undoAudioVolume: number = 0.2;
-const disabledAudioVolume: number = 0.15;
+const CORRECT_AUDIO_VOLUME: number = 0.25;
+const SET_PROBLEM_AUDIO_VOLUME: number = 0.3;
+const OPERATION_AUDIO_VOLUME: number = 1.0;
+const NAVIGATION_AUDIO_VOLUME: number = 0.2;
+const UNDO_AUDIO_VOLUME: number = 0.2;
+const DISABLED_AUDIO_VOLUME: number = 0.15;
 
-const undoPenalty: number = 1000;
+const UNDO_PENALTY: number = 3000;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -144,16 +144,16 @@ function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitH
 }
 
 function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation, isActive: boolean }) {
-  const operationAudioPlay = useAudio(operationAudioPath);
-  const disabledAudioPlay = useAudio(disabledAudioPath);
+  const operationAudioPlay = useAudio(OPERATION_AUDIO_PATH);
+  const disabledAudioPlay = useAudio(DISABLED_AUDIO_PATH);
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
-        operationAudioPlay(operationAudioVolume);
+        operationAudioPlay(OPERATION_AUDIO_VOLUME);
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
       }
       else {
-        disabledAudioPlay(disabledAudioVolume);
+        disabledAudioPlay(DISABLED_AUDIO_VOLUME);
       }
     }}>
       {getOperationDisplayName(operation)}
@@ -192,11 +192,11 @@ function BitDisplayTarget({ bits }: { bits: Bit }) {
 }
 
 function UndoButton({ bitHistory, dispatchbitHistory, isActive, time, setTime} : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }) {
-  const undoAudioPlay = useAudio(undoAudioPath);
-  const disabledAudioPlay = useAudio(disabledAudioPath);
+  const undoAudioPlay = useAudio(UNDO_AUDIO_PATH);
+  const disabledAudioPlay = useAudio(DISABLED_AUDIO_PATH);
   if (bitHistory.length === 1){
     return (
-      <button className="undoButtonDisabled" onClick={() => {disabledAudioPlay(disabledAudioVolume)}}> 
+      <button className="undoButtonDisabled" onClick={() => {disabledAudioPlay(DISABLED_AUDIO_VOLUME)}}> 
         1 手戻る
       </button>
     );
@@ -204,12 +204,12 @@ function UndoButton({ bitHistory, dispatchbitHistory, isActive, time, setTime} :
     return (
       <button className="undoButtonEnabled" onClick={() => {
         if (isActive){
-          undoAudioPlay(undoAudioVolume);
+          undoAudioPlay(UNDO_AUDIO_VOLUME);
           dispatchbitHistory({operation_type: "pop"});
-          setTime(time => time + undoPenalty);
+          setTime(time => time + UNDO_PENALTY);
         }
         else {
-          disabledAudioPlay(disabledAudioVolume);
+          disabledAudioPlay(DISABLED_AUDIO_VOLUME);
         }
       }
       }>
@@ -251,11 +251,11 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
 }
 
 function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
   if (localStorage.getItem(problemFile) == "Solved"){
     return (
       <button className="problemButtonSolved" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
       }}>
         {problemName}
@@ -264,7 +264,7 @@ function ProblemButton({ problemName, problemFile, setStatus }: { problemName: s
   } else if (localStorage.getItem(problemFile) == "SolvedMinimum"){
     return (
       <button className="problemButtonSolvedMinimum" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
       }}>
         {problemName}
@@ -273,7 +273,7 @@ function ProblemButton({ problemName, problemFile, setStatus }: { problemName: s
   } else {
     return (
       <button className="problemButtonUnsolved" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
       }}>
         {problemName}
@@ -292,12 +292,12 @@ function TimeAttackButtonContainer({children}: {children: React.ReactNode }) {
 
 function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeAttackName: string, timeAttackFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
   const bestTime = localStorage.getItem(timeAttackFile);
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
   if (bestTime === null){
     return (
       <div>
         <button className="timeAttackButtonUnplayed" onClick={() => {
-          navigationAudioPlay(navigationAudioVolume), 
+          navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
           setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
         }}>
           {timeAttackName} (ベストタイム: 999.99 秒)
@@ -307,7 +307,7 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
   } else {
     return (
       <button className="timeAttackButtonPlayed" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
       }}>
         {timeAttackName} (ベストタイム: {(Number(bestTime) / 1000).toFixed(2)} 秒)
@@ -317,10 +317,10 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
 }
 
 function ProblemModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
     return (
         <button className="problemModeButton" onClick={() => {
-          navigationAudioPlay(navigationAudioVolume), 
+          navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
           setStatus({status_type: "ProblemSelectionScreen"})
         }}>
           熟考モード
@@ -328,10 +328,10 @@ function ProblemModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStat
     );
 }
 function TimeAttackModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
     return (
         <button className="timeAttackModeButton" onClick={() => {
-          navigationAudioPlay(navigationAudioVolume), 
+          navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
           setStatus({status_type: "TimeAttackSelectionScreen"})
         }}>
           タイムアタックモード
@@ -411,10 +411,10 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
 }
 
 function ReturnToProblemSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
   return (
     <button className="returnToProblemSelectionButton" onClick={() => {
-      navigationAudioPlay(navigationAudioVolume), 
+      navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
       setStatus({status_type: "ProblemSelectionScreen"})
     }}>
       戻る
@@ -423,10 +423,10 @@ function ReturnToProblemSelectionButton({ setStatus } : { setStatus : React.Disp
 }
 
 function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
     return (
       <button className="returnToTimeAttackSelectionButton" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "TimeAttackSelectionScreen"})
       }}>
         戻る
@@ -436,10 +436,10 @@ function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.D
   
 
 function ReturnToTitleButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
-  const navigationAudioPlay = useAudio(navigationAudioPath);
+  const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
     return (
       <button className="returnToTitleButton" onClick={() => {
-        navigationAudioPlay(navigationAudioVolume), 
+        navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
         setStatus({status_type: "TitleScreen"})
       }}>
         戻る
@@ -546,14 +546,14 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [time, setTime] = useState<number>(0);
-  const correctAudioPlay = useAudio(correctAudioPath);
+  const correctAudioPlay = useAudio(CORRECT_AUDIO_PATH);
 
   let isActive = (problem.bit_length > 0 && bitHistory.length > 0 && bitHistory[bitHistory.length - 1] !== problem.target);
 
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const response = await fetch(`${basePath}/problems/${problemFileName}`);
+        const response = await fetch(`${BASE_PATH}/problems/${problemFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
@@ -575,7 +575,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
     if (typeof window !== "undefined"){
-      correctAudioPlay(correctAudioVolume);
+      correctAudioPlay(CORRECT_AUDIO_VOLUME);
     }
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
@@ -602,13 +602,13 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
   const [timeActive, setTimeActive] = useState<boolean>(false);
-  const correctAudioPlay = useAudio(correctAudioPath);
-  const setProblemAudioPlay = useAudio(setProblemAudioPath);
+  const correctAudioPlay = useAudio(CORRECT_AUDIO_PATH);
+  const setProblemAudioPlay = useAudio(SET_PROBLEM_AUDIO_PATH);
 
   useEffect(() => {
     async function fetchTimeAttack() {
       try {
-        const response = await fetch(`${basePath}/time_attack_data/${timeAttackFileName}`);
+        const response = await fetch(`${BASE_PATH}/time_attack_data/${timeAttackFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
@@ -634,11 +634,11 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
     async function fetchProblem() {
       const problemIndex = Math.floor(Math.random() * timeAttack.problems.length);
       try {
-        const response = await fetch(`${basePath}/problems/${timeAttack.problems[problemIndex]}`);
+        const response = await fetch(`${BASE_PATH}/problems/${timeAttack.problems[problemIndex]}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
-        setProblemAudioPlay(setProblemAudioVolume);
+        setProblemAudioPlay(SET_PROBLEM_AUDIO_VOLUME);
         const data = await response.json();
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
@@ -659,7 +659,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      correctAudioPlay(correctAudioVolume);
+      correctAudioPlay(CORRECT_AUDIO_VOLUME);
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
