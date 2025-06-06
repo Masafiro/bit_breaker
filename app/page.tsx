@@ -13,10 +13,12 @@ const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
 const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
 const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
+const navigationAudioPath: string = `${basePath}/audios/navigation/navigation34.mp3`;
 
 const correctAudioVolume: number = 0.2;
 const setProblemAudioVolume: number = 0.3;
 const operationAudioVolume: number = 1.0;
+const navigationAudioVolume: number = 0.3;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -231,21 +233,31 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
 }
 
 function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   if (localStorage.getItem(problemFile) == "Solved"){
     return (
-      <button className="problemButtonSolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonSolved" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
   } else if (localStorage.getItem(problemFile) == "SolvedMinimum"){
     return (
-      <button className="problemButtonSolvedMinimum" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonSolvedMinimum" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
   } else {
     return (
-      <button className="problemButtonUnsolved" onClick={() => setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})}>
+      <button className="problemButtonUnsolved" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "ProblemModeGameScreen", problem_file: problemFile})
+      }}>
         {problemName}
       </button>
     );
@@ -262,17 +274,24 @@ function TimeAttackButtonContainer({children}: {children: React.ReactNode }) {
 
 function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeAttackName: string, timeAttackFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
   const bestTime = localStorage.getItem(timeAttackFile);
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   if (bestTime === null){
     return (
       <div>
-        <button className="timeAttackButtonUnplayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
+        <button className="timeAttackButtonUnplayed" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
+        }}>
           {timeAttackName} (ベストタイム: 999.99 秒)
         </button>
       </div>
     );
   } else {
     return (
-      <button className="timeAttackButtonPlayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
+      <button className="timeAttackButtonPlayed" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})
+      }}>
         {timeAttackName} (ベストタイム: {(Number(bestTime) / 1000).toFixed(2)} 秒)
       </button>
     );
@@ -280,15 +299,23 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
 }
 
 function ProblemModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-        <button className="problemModeButton" onClick={() => setStatus({status_type: "ProblemSelectionScreen"})}>
+        <button className="problemModeButton" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "ProblemSelectionScreen"})
+        }}>
           熟考モード
         </button>
     );
 }
 function TimeAttackModeButton({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<Status>>;}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-        <button className="timeAttackModeButton" onClick={() => setStatus({status_type: "TimeAttackSelectionScreen"})}>
+        <button className="timeAttackModeButton" onClick={() => {
+          navigationAudioPlay(navigationAudioVolume), 
+          setStatus({status_type: "TimeAttackSelectionScreen"})
+        }}>
           タイムアタックモード
         </button>
     );
@@ -366,16 +393,24 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
 }
 
 function ReturnToProblemSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
   return (
-    <button className="returnToProblemSelectionButton" onClick={() => setStatus({status_type: "ProblemSelectionScreen"})}>
+    <button className="returnToProblemSelectionButton" onClick={() => {
+      navigationAudioPlay(navigationAudioVolume), 
+      setStatus({status_type: "ProblemSelectionScreen"})
+    }}>
       戻る
     </button>
   )
 }
 
 function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-      <button className="returnToTimeAttackSelectionButton" onClick={() => setStatus({status_type: "TimeAttackSelectionScreen"})}>
+      <button className="returnToTimeAttackSelectionButton" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TimeAttackSelectionScreen"})
+      }}>
         戻る
       </button>
     )
@@ -383,8 +418,12 @@ function ReturnToTimeAttackSelectionButton({ setStatus } : { setStatus : React.D
   
 
 function ReturnToTitleButton({ setStatus } : { setStatus : React.Dispatch<React.SetStateAction<Status>>}){
+  const navigationAudioPlay = useAudio(navigationAudioPath);
     return (
-      <button className="returnToTitleButton" onClick={() => setStatus({status_type: "TitleScreen"})}>
+      <button className="returnToTitleButton" onClick={() => {
+        navigationAudioPlay(navigationAudioVolume), 
+        setStatus({status_type: "TitleScreen"})
+      }}>
         戻る
       </button>     
     )
