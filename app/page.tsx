@@ -506,17 +506,17 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
     fetchProblem();
   }, []);
 
-  useEffect(() => {
-    if (bitHistory[bitHistory.length - 1] === problem.target){
+  if (bitHistory[bitHistory.length - 1] === problem.target){
+    if (typeof window !== "undefined"){
       const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
       correctAudio.play();
-      if (bitHistory.length - 1 === problem.minimum_moves){
-        localStorage.setItem(problemFileName, "SolvedMinimum");
-      } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
-        localStorage.setItem(problemFileName, "Solved");
-      }
     }
-  }, [bitHistory]);
+    if (bitHistory.length - 1 === problem.minimum_moves){
+      localStorage.setItem(problemFileName, "SolvedMinimum");
+    } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
+      localStorage.setItem(problemFileName, "Solved");
+    }
+  }
 
   return (
     <div className="gameInfo">
