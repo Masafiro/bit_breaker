@@ -219,13 +219,20 @@ function UndoButton({ bitHistory, dispatchbitHistory, isActive, time, setTime} :
   }
 }
 
-function RetryButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
+function RetryButton({ bitHistory, dispatchbitHistory, isActive, time, setTime } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }) {
+  const undoAudioPlay = useAudio(UNDO_AUDIO_PATH);
+  const disabledAudioPlay = useAudio(DISABLED_AUDIO_PATH);
   return (
     <button className="retryButton" onClick={() => {
       if (isActive){
+        undoAudioPlay(UNDO_AUDIO_VOLUME);
         let initialBit = bitHistory[0];
         dispatchbitHistory({operation_type: "clear"});
         dispatchbitHistory({operation_type: "append", parameter: initialBit});
+        setTime(time => time + UNDO_PENALTY);
+      }
+      else {
+        disabledAudioPlay(DISABLED_AUDIO_VOLUME);
       }
     }}>
       リトライ
@@ -237,7 +244,7 @@ function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive, ti
   return (
     <div className="undoRetryButtonContainer">
       <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
-      {/* <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} /> */}
+      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
     </div>
   )
 }
