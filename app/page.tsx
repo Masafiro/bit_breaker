@@ -7,7 +7,8 @@ import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
 
-const correct_audio = new Audio("/audios/correct/correct037.mp3");
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
 
 type Bit = string;
 type bitHistory = Bit[];
