@@ -289,7 +289,6 @@ function ModeSelection({setStatus}: {setStatus: React.Dispatch<React.SetStateAct
 
 function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetStateAction<Status>>}) {
   const solvedproblem1 = localStorage.getItem('problem1.json');
-  console.log(solvedproblem1);
   return (
     <div>
       <ProblemButtonContainer>
@@ -444,7 +443,6 @@ function ProblemModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setT
   )
 }
 function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, setTime, setStatus, solvedProblemCount, problemCount }: { minimumMoves: number, moveCount: number, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>, setStatus: React.Dispatch<React.SetStateAction<Status>> , solvedProblemCount: number, problemCount: number }){
-  console.log(moveCount);
   return (
     <div className="gameInfoLeft">
       <SolvedProblemCountDisplay solvedProblemCount={solvedProblemCount} problemCount={problemCount} />
@@ -481,14 +479,12 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   useEffect(() => {
     async function fetchProblem() {
       try {
-        console.log(`basepath: ${basePath}`); 
         const response = await fetch(`${basePath}/problems/${problemFileName}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         setProblem(data.problem);
-        console.log(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
         dispatchbitHistory({ operation_type: "append", parameter: data.problem.start });
       } catch (error) {
