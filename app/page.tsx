@@ -251,7 +251,7 @@ function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeA
     return (
       <div>
         <button className="timeAttackButtonUnplayed" onClick={() => setStatus({status_type: "TimeAttackModeGameScreen", time_attack_file: timeAttackFile})}>
-          {timeAttackName}
+          {timeAttackName} (ベストタイム: 999.99 秒)
         </button>
       </div>
     );
