@@ -428,7 +428,7 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   }, [time2]);
   return (
     <div>
-      タイム: {(time * 1.126 / 1000).toFixed(2)}秒
+      タイム: {(time * 1.102 / 1000).toFixed(2)}秒
     </div>
   )
 }
