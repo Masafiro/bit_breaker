@@ -7,7 +7,10 @@ import next from "next";
 import { ReadStream } from "fs";
 import Image from 'next/image'
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
+const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
+const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -130,7 +133,7 @@ function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispa
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
-        const operationAudio = new Audio(`${basePath}/audios/operation/operation06.mp3`);
+        const operationAudio = new Audio(operationAudioPath);
         operationAudio.play();
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
       }
@@ -508,7 +511,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
     if (typeof window !== "undefined"){
-      const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
+      const correctAudio = new Audio(correctAudioPath);
       correctAudio.play();
     }
     if (bitHistory.length - 1 === problem.minimum_moves){
@@ -570,7 +573,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
-        const setProblemAudio = new Audio(`${basePath}/audios/set_prob/set_prob28.mp3`);
+        const setProblemAudio = new Audio(setProblemAudioPath);
         setProblemAudio.play();
         const data = await response.json();
         setProblem(data.problem);
@@ -592,7 +595,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
+      const correctAudio = new Audio(correctAudioPath);
       correctAudio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
