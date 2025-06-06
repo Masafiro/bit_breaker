@@ -24,6 +24,8 @@ const navigationAudioVolume: number = 0.2;
 const undoAudioVolume: number = 0.2;
 const disabledAudioVolume: number = 0.15;
 
+const undoPenalty: number = 1000;
+
 type Bit = string;
 type bitHistory = Bit[];
 
@@ -189,7 +191,7 @@ function BitDisplayTarget({ bits }: { bits: Bit }) {
   )
 }
 
-function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
+function UndoButton({ bitHistory, dispatchbitHistory, isActive, time, setTime} : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }) {
   const undoAudioPlay = useAudio(undoAudioPath);
   const disabledAudioPlay = useAudio(disabledAudioPath);
   if (bitHistory.length === 1){
@@ -204,6 +206,7 @@ function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory:
         if (isActive){
           undoAudioPlay(undoAudioVolume);
           dispatchbitHistory({operation_type: "pop"});
+          setTime(time => time + undoPenalty);
         }
         else {
           disabledAudioPlay(disabledAudioVolume);
@@ -230,10 +233,10 @@ function RetryButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory
   )
 }
 
-function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean}){
+function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive, time, setTime } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>>}){
   return (
     <div className="undoRetryButtonContainer">
-      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} />
+      <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
       {/* <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} /> */}
     </div>
   )
@@ -488,9 +491,9 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   const [time2, setTime2] = useState<number>(0);
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTime2(time2 + 10);
+      setTime2(time2 => time2 + 10);
       if (isActive){
-        setTime(time + 10);
+        setTime(time => time + 10);
       }
     }, 10);
     return () => clearTimeout(timer);
@@ -523,7 +526,7 @@ function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, s
   )
 }
 
-function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean }){
+function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive, time, setTime }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean, time: number, setTime: React.Dispatch<React.SetStateAction<number>> }){
   console.log(bitHistory.length, problem.minimum_moves);
   return (
     <div className="gameInfoRight">
@@ -534,7 +537,7 @@ function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive }: { 
           <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} isActive={isActive} />
         ))}
       </BitOperationButtonContainer>
-      <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive}/>
+      <UndoRetryButtonContainer bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} time={time} setTime={setTime} />
     </div>
   )
 }
@@ -584,7 +587,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
   return (
     <div className="gameInfo">
       <ProblemModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={isActive} time={time} setTime={setTime} setStatus={setStatus}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} />
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={isActive} time={time} setTime={setTime} />
     </div>
   );
 }
@@ -677,7 +680,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   return (
     <div className="gameInfo">
       <TimeAttackModeGameInfoLeft minimumMoves={problem.minimum_moves} moveCount={Math.max(bitHistory.length - 1, 0)} isActive={timeActive} time={time} setTime={setTime} setStatus={setStatus} solvedProblemCount={solvedProblemCount} problemCount={timeAttack.problem_count}/>
-      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={timeActive} />
+      <GameInfoRight bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} problem={problem} isActive={timeActive} time={time} setTime={setTime} />
     </div>
   );
 }
