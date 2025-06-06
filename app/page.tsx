@@ -9,9 +9,14 @@ import Image from 'next/image'
 import { useAudio } from "./hooks/useAudio";
 
 const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
 const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
 const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
+
+const correctAudioVolume: number = 0.2;
+const setProblemAudioVolume: number = 0.3;
+const operationAudioVolume: number = 1.0;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -135,7 +140,7 @@ function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispa
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
-        operationAudioPlay();
+        operationAudioPlay(operationAudioVolume);
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
       }
     }}>
@@ -513,7 +518,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   if (bitHistory[bitHistory.length - 1] === problem.target){
     if (typeof window !== "undefined"){
-      correctAudioPlay();
+      correctAudioPlay(correctAudioVolume);
     }
     if (bitHistory.length - 1 === problem.minimum_moves){
       localStorage.setItem(problemFileName, "SolvedMinimum");
@@ -576,7 +581,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
-        setProblemAudioPlay();
+        setProblemAudioPlay(setProblemAudioVolume);
         const data = await response.json();
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
@@ -597,7 +602,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      correctAudioPlay();
+      correctAudioPlay(correctAudioVolume);
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {

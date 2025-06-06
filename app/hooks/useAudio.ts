@@ -20,10 +20,11 @@ export function useAudio(audioPath: string) {
   }, [audioPath]);
 
   // 再生関数
-  const play = () => {
+  const play = (volume: number = 1.0) => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      audioRef.current.volume = volume;
       audioRef.current.play();
     }
   };
