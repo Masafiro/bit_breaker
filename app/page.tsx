@@ -146,8 +146,12 @@ function BitOperationButtonContainer({ children }: { children: React.ReactNode }
   );
 }
 
-function BitDisplayCurrent({ bits, correct }: { bits: Bit, correct: boolean }) {
-  if (correct){
+function BitDisplayCurrent({ bits, correct, isMinimum }: { bits: Bit, correct: boolean, isMinimum: boolean }) {
+  if (isMinimum && correct){
+    return (
+      <div className="bitDisplayMinimum"> {bits} </div>
+    )
+  } else if (correct){
     return (
       <div className="bitDisplayCorrect"> {bits} </div>
     )
@@ -455,10 +459,11 @@ function TimeAttackModeGameInfoLeft({ minimumMoves, moveCount, isActive, time, s
 }
 
 function GameInfoRight({ bitHistory, dispatchbitHistory, problem, isActive }: { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, problem: Problem, isActive: boolean }){
+  console.log(bitHistory.length, problem.minimum_moves);
   return (
     <div className="gameInfoRight">
       <BitDisplayTarget bits={problem.target} />
-      <BitDisplayCurrent bits={bitHistory[bitHistory.length - 1]} correct={bitHistory[bitHistory.length - 1] === problem.target}/>
+      <BitDisplayCurrent bits={bitHistory[bitHistory.length - 1]} correct={bitHistory[bitHistory.length - 1] === problem.target} isMinimum={problem.minimum_moves === bitHistory.length - 1}/>
       <BitOperationButtonContainer>
         {problem.operations.map((operation, index) => (
           <BitOperationButton key={index} dispatchbitHistory={dispatchbitHistory} operation={operation} isActive={isActive} />

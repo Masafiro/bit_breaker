@@ -78,7 +78,23 @@ body {
   font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
   font-weight: bold; /* 太字にして強調 */
   color: #333; /* テキストの色 */
-  background-color: #ffff00; /* 背景色 */
+  background-color: #7ae3ec; /* 背景色 */
+  border: 2px solid #007bff; /* 枠線 */
+  border-radius: 8px; /* 角を丸くする */
+  padding: 2px; /* 内側の余白 */
+  width: 80%; /* コンテナの幅を調整 */
+  margin: 10px auto 30px; /* 上下に余白を追加し、中央揃え */
+  text-align: center; /* テキストを中央揃え */
+}
+
+.bitDisplayMinimum {
+  display: flex; /* 中央揃えのためにflexboxを使用 */
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center; /* 垂直方向に中央揃え */
+  font-size: 5rem; /* ビット列を見やすくするためのフォントサイズ */
+  font-weight: bold; /* 太字にして強調 */
+  color: #333; /* テキストの色 */
+  background-color: #f5e900; /* 背景色 */
   border: 2px solid #007bff; /* 枠線 */
   border-radius: 8px; /* 角を丸くする */
   padding: 2px; /* 内側の余白 */
