@@ -17,7 +17,7 @@ const navigationAudioPath: string = `${basePath}/audios/navigation/navigation34.
 const undoAudioPath: string = `${basePath}/audios/undo/undo05.mp3`;
 const disabledAudioPath: string = `${basePath}/audios/disabled/disabled04.mp3`;
 
-const correctAudioVolume: number = 0.2;
+const correctAudioVolume: number = 0.25;
 const setProblemAudioVolume: number = 0.3;
 const operationAudioVolume: number = 1.0;
 const navigationAudioVolume: number = 0.2;
@@ -143,11 +143,15 @@ function bitHistoryReducer(state: bitHistory, action: bitHistoryOperation): bitH
 
 function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispatchbitHistory: React.Dispatch<bitHistoryOperation>, operation: BitOperation, isActive: boolean }) {
   const operationAudioPlay = useAudio(operationAudioPath);
+  const disabledAudioPlay = useAudio(disabledAudioPath);
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
         operationAudioPlay(operationAudioVolume);
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
+      }
+      else {
+        disabledAudioPlay(disabledAudioVolume);
       }
     }}>
       {getOperationDisplayName(operation)}
@@ -186,21 +190,25 @@ function BitDisplayTarget({ bits }: { bits: Bit }) {
 }
 
 function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
+  const undoAudioPlay = useAudio(undoAudioPath);
+  const disabledAudioPlay = useAudio(disabledAudioPath);
   if (bitHistory.length === 1){
-    const disabledAudioPlay = useAudio(disabledAudioPath);
     return (
       <button className="undoButtonDisabled" onClick={() => {disabledAudioPlay(disabledAudioVolume)}}> 
         1 手戻る
       </button>
     );
   } else {
-    const undoAudioPlay = useAudio(undoAudioPath);
     return (
       <button className="undoButtonEnabled" onClick={() => {
-        undoAudioPlay(undoAudioVolume);
         if (isActive){
+          undoAudioPlay(undoAudioVolume);
           dispatchbitHistory({operation_type: "pop"});
-        }}
+        }
+        else {
+          disabledAudioPlay(disabledAudioVolume);
+        }
+      }
       }>
         1 手戻る
       </button>
