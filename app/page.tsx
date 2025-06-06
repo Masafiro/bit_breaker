@@ -432,7 +432,7 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   }, [time2]);
   return (
     <div>
-      タイム: {(time * 1.126 / 1000).toFixed(2)}秒
+      タイム: {(time * 1.111 / 1000).toFixed(2)}秒
     </div>
   )
 }
@@ -506,8 +506,8 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
 
   useEffect(() => {
     if (bitHistory[bitHistory.length - 1] === problem.target){
-      const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
-      correct_audio.play();
+      const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
+      correctAudio.play();
       if (bitHistory.length - 1 === problem.minimum_moves){
         localStorage.setItem(problemFileName, "SolvedMinimum");
       } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
@@ -568,6 +568,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         if (!response.ok) {
           throw new Error(`Failed to fetch JSON: ${response.status} ${response.statusText}`);
         }
+        const setProblemAudio = new Audio(`${basePath}/audios/set_prob/set_prob28.mp3`);
+        setProblemAudio.play();
         const data = await response.json();
         setProblem(data.problem);
         dispatchbitHistory({ operation_type: "clear" });
@@ -588,8 +590,8 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       setTimeActive(false);
-      const correct_audio = new Audio(`${basePath}/audios/correct/correct099.mp3`);
-      correct_audio.play();
+      const correctAudio = new Audio(`${basePath}/audios/correct/correct037.mp3`);
+      correctAudio.play();
       const nextSolvedProblemCount = solvedProblemCount + 1;
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
