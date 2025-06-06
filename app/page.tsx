@@ -159,7 +159,7 @@ function BitDisplayCurrent({ bits, correct }: { bits: Bit, correct: boolean }) {
 function BitDisplayTarget({ bits }: { bits: Bit }) {
   return (
     <div className="bitDisplayTarget"> {bits} </div>
-  )    
+  )
 }
 
 function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
@@ -523,12 +523,12 @@ type TimeAttack = {problems: string[], problem_count: number}
 function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: React.Dispatch<React.SetStateAction<Status>>, timeAttackFileName: string}) {
   const [timeAttack, setTimeAttack] = useState<TimeAttack>({problems: [], problem_count: 0});
   const [solvedProblemCount, setSolvedProblemCount] = useState<number>(0);
-  const [currentProblem, setcurrentProblem] = useState<number>(0);
+  const [currentProblem, setCurrentProblem] = useState<number>(0);
   const [problem, setProblem] = useState<Problem>({bit_length: 0, start: "", target: "", operation_count: 0, operations: [], minimum_moves: 0});
   const [bitHistory, dispatchbitHistory] = useReducer(bitHistoryReducer, []);
   const [time, setTime] = useState<number>(0);
 
-  let isActive = timeAttack.problem_count > 0 && currentProblem === solvedProblemCount + 1;
+  let isActive = timeAttack.problem_count > 0 && bitHistory.length >= 1 && currentProblem === solvedProblemCount + 1;
 
   useEffect(() => {
     async function fetchTimeAttack() {
@@ -541,7 +541,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         }
         const data = await response.json();
         setTimeAttack(data);
-        setcurrentProblem(1);
+        setCurrentProblem(1);
       } catch (error) {
         console.error("Error fetching problem file:", error);
         if (error instanceof Error) {
@@ -585,10 +585,9 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
       const nextSolvedProblemCount = solvedProblemCount + 1;
-      setSolvedProblemCount(nextSolvedProblemCount);
       if (nextSolvedProblemCount < timeAttack.problem_count){
         setTimeout(() => {
-          setcurrentProblem(nextSolvedProblemCount + 1);
+          setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
         const solveTime = time;
@@ -598,6 +597,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
           localStorage.setItem(timeAttackFileName, Math.min(Number(localStorage.getItem(timeAttackFileName)), solveTime).toString())
         }
       }
+      setSolvedProblemCount(nextSolvedProblemCount);
     }
   }, [bitHistory]);
 
