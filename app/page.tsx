@@ -14,11 +14,15 @@ const correctAudioPath: string = `${basePath}/audios/correct/correct037.mp3`;
 const setProblemAudioPath: string = `${basePath}/audios/set_problem/set_problem28.mp3`;
 const operationAudioPath: string = `${basePath}/audios/operation/operation06.mp3`;
 const navigationAudioPath: string = `${basePath}/audios/navigation/navigation34.mp3`;
+const undoAudioPath: string = `${basePath}/audios/undo/undo05.mp3`;
+const disabledAudioPath: string = `${basePath}/audios/disabled/disabled04.mp3`;
 
 const correctAudioVolume: number = 0.2;
 const setProblemAudioVolume: number = 0.3;
 const operationAudioVolume: number = 1.0;
-const navigationAudioVolume: number = 0.3;
+const navigationAudioVolume: number = 0.2;
+const undoAudioVolume: number = 0.2;
+const disabledAudioVolume: number = 0.15;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -183,14 +187,17 @@ function BitDisplayTarget({ bits }: { bits: Bit }) {
 
 function UndoButton({ bitHistory, dispatchbitHistory, isActive } : { bitHistory: bitHistory, dispatchbitHistory: React.Dispatch<bitHistoryOperation>, isActive: boolean }){
   if (bitHistory.length === 1){
+    const disabledAudioPlay = useAudio(disabledAudioPath);
     return (
-      <button className="undoButtonDisabled">
+      <button className="undoButtonDisabled" onClick={() => {disabledAudioPlay(disabledAudioVolume)}}> 
         1 手戻る
       </button>
     );
   } else {
+    const undoAudioPlay = useAudio(undoAudioPath);
     return (
       <button className="undoButtonEnabled" onClick={() => {
+        undoAudioPlay(undoAudioVolume);
         if (isActive){
           dispatchbitHistory({operation_type: "pop"});
         }}
@@ -219,7 +226,7 @@ function UndoRetryButtonContainer({ bitHistory, dispatchbitHistory, isActive } :
   return (
     <div className="undoRetryButtonContainer">
       <UndoButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} />
-      <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} />
+      {/* <RetryButton bitHistory={bitHistory} dispatchbitHistory={dispatchbitHistory} isActive={isActive} /> */}
     </div>
   )
 }
