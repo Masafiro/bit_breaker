@@ -130,6 +130,8 @@ function BitOperationButton({ dispatchbitHistory, operation, isActive }: { dispa
   return (
     <button className="bitOperationButton" onClick={() => {
       if (isActive){
+        const operationAudio = new Audio(`${basePath}/audios/operation/operation06.mp3`);
+        operationAudio.play();
         dispatchbitHistory({operation_type: "bitoperation", bit_operation: operation});
       }
     }}>
