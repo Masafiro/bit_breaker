@@ -10,6 +10,8 @@ import { useAudio } from "./hooks/useAudio";
 // import { neon } from '@neondatabase/serverless';
 // import { createComment } from './actions/createComment';
 // import { getDisplayName } from "next/dist/shared/lib/utils";
+import { useUser } from "@stackframe/stack";
+import SignOutButton from '@/components/ui/SignOutButton';
 
 const BASE_PATH: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -305,10 +307,10 @@ function TimeAttackButtonContainer({children}: {children: React.ReactNode }) {
   )
 }
 
-function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus }: { timeAttackName: string, timeAttackFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
-  const bestTime = localStorage.getItem(timeAttackFile);
+function TimeAttackButton({ timeAttackName, timeAttackFile, setStatus, bestTime }: { timeAttackName: string, timeAttackFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>>, bestTime: number | null }) {
+  // const bestTime = localStorage.getItem(timeAttackFile);
   const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
-  if (bestTime === null){
+  if (!bestTime){
     return (
       <div>
         <button className="timeAttackButtonUnplayed" onClick={() => {
@@ -463,13 +465,29 @@ function ReturnToTitleButton({ setStatus } : { setStatus : React.Dispatch<React.
 }
 
 function TimeAttackSelection({ setStatus }: { setStatus: React.Dispatch<React.SetStateAction<Status>>}){
+  const [bestTimes, setBestTimes] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    // ★APIから全種類のベストタイムを取得する
+    const fetchBestTimes = async () => {
+      try {
+        const response = await fetch('/api/time-attack/best-times');
+        const data = await response.json();
+        setBestTimes(data);
+      } catch (error) {
+        console.error("Failed to fetch best times:", error);
+      }
+    };
+    fetchBestTimes();
+  }, []);
+
   return(
     <div>
       <div>
       <TimeAttackButtonContainer>
-        <TimeAttackButton timeAttackName="5桁 1手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} />
-        <TimeAttackButton timeAttackName="5桁 2手 10問" timeAttackFile="time_attack2.json" setStatus={setStatus} />
-        <TimeAttackButton timeAttackName="5桁 3手 10問" timeAttackFile="time_attack3.json" setStatus={setStatus} />
+        <TimeAttackButton timeAttackName="5桁 1手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} bestTime={bestTimes['time_attack1.json']} />
+        <TimeAttackButton timeAttackName="5桁 2手 10問" timeAttackFile="time_attack2.json" setStatus={setStatus} bestTime={bestTimes['time_attack2.json']} />
+        <TimeAttackButton timeAttackName="5桁 3手 10問" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
       </TimeAttackButtonContainer>
       </div>
       <div>
@@ -619,6 +637,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
   const [timeActive, setTimeActive] = useState<boolean>(false);
   const correctAudioPlay = useAudio(CORRECT_AUDIO_PATH);
   const setProblemAudioPlay = useAudio(SET_PROBLEM_AUDIO_PATH);
+  // const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchTimeAttack() {
@@ -681,12 +700,29 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
           setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
-        const solveTime = time * 1.111 + 10;
-        if (localStorage.getItem(timeAttackFileName) == null){
-          localStorage.setItem(timeAttackFileName, solveTime.toString());
-        } else {
-          localStorage.setItem(timeAttackFileName, Math.min(Number(localStorage.getItem(timeAttackFileName)), solveTime).toString())
-        }
+        const solveTime = Math.round(time * 1.111 + 10);
+        // if (localStorage.getItem(timeAttackFileName) == null){
+        //   localStorage.setItem(timeAttackFileName, solveTime.toString());
+        // } else {
+        //   localStorage.setItem(timeAttackFileName, Math.min(Number(localStorage.getItem(timeAttackFileName)), solveTime).toString())
+        // }
+        // ★localStorage.setItem の代わりにAPIを呼び出す
+        const submitScore = async () => {
+          try {
+            await fetch('/api/time-attack/submit-score', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sessionType: timeAttackFileName,
+                time: solveTime,
+              }),
+              credentials: 'include', // ★★★ これが重要 ★★★
+            });
+          } catch (error) {
+            console.error("Failed to submit score:", error);
+          }
+        };
+      submitScore();
       }
       setSolvedProblemCount(nextSolvedProblemCount);
     }
@@ -732,6 +768,7 @@ export function ClientPage({ user }: { user: {displayName: string } | null }) {
     case "TitleScreen":
         return(
           <div>
+            <SignOutButton />
             {user && <p className="welcome">ようこそ、{user.displayName}さん！</p>}
             <Title />
             <ModeSelection setStatus={setStatus} />

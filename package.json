@@ -17,13 +17,15 @@
     "next": "15.3.3",
     "node-pg-migrate": "^8.0.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "svix": "^1.67.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "dotenv-cli": "^8.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
