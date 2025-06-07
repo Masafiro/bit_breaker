@@ -666,7 +666,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
           setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
-        const solveTime = time * 1.111 +10;
+        const solveTime = time * 1.111 + 10;
         if (localStorage.getItem(timeAttackFileName) == null){
           localStorage.setItem(timeAttackFileName, solveTime.toString());
         } else {
