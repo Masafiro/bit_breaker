@@ -1,0 +1,83 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "nextjs-compiler"
+}
+
+// --- ユーザーモデル：全てのゲームセッションはここに紐づく ---
+model User {
+  id    String @id @default(cuid())
+  email String @unique
+  name  String?
+  problemModeSessions ProblemModeSession[]
+  timeAttackSessions  TimeAttackSession[]
+}
+
+
+// --- ProblemMode関連のモデル ---
+
+// ProblemModeの1回のプレイセッション全体を示す
+model ProblemModeSession {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  createdAt      DateTime        @default(now())
+
+  // このセッションに紐づく、50問それぞれの結果
+  problemResults ProblemResult[]
+}
+
+// ProblemModeの各問題（1〜50）の結果
+model ProblemResult {
+  id            String             @id @default(cuid())
+  sessionId     String
+  session       ProblemModeSession @relation(fields: [sessionId], references: [id])
+  problemNumber Int                // 問題番号 (1から50)
+  status        ProblemStatus      // 問題の状態（UNSOLVED, SOLVED, SOLVED_MINNIMUM）
+
+  @@unique([sessionId, problemNumber]) // 同じセッションで同じ問題番号が重複しないように
+}
+
+
+// --- TimeAttackMode関連のモデル ---
+
+// TimeAttackModeの1回のプレイセッション全体を示す
+model TimeAttackSession {
+  id           String                @id @default(cuid())
+  totalTime    Int?                  // 3問の合計タイム（ミリ秒）。後から計算して入れる。
+  userId       String
+  user         User                  @relation(fields: [userId], references: [id])
+  createdAt    DateTime              @default(now())
+
+  // このセッションに紐づく、3種類の問題それぞれのタイム
+  problemTimes TimeAttackProblemTime[]
+}
+
+// TimeAttackModeの各問題（3種類）の結果
+model TimeAttackProblemTime {
+  id          String            @id @default(cuid())
+  sessionId   String
+  session     TimeAttackSession @relation(fields: [sessionId], references: [id])
+  problemType TimeAttackProblemType // 問題の種類 ("EASY", "NORMAL", "HARD" など)
+  timeTaken   Int               // その問題を解くのにかかった時間（ミリ秒）
+
+  @@unique([sessionId, problemType]) // 同じセッションで同じ問題の種類が重複しないように
+}
+
+
+// --- Enum定義（選択肢を固定して、タイプミスを防ぐ） ---
+
+enum ProblemStatus {
+  UNSOLVED
+  SOLVED
+  SOLVED_MINNIMUM
+}
+
+enum TimeAttackProblemType {
+  ONE_MOVE
+  TWO_MOVES
+  THREE_MOVES
+}

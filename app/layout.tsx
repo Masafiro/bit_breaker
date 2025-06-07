@@ -1,4 +1,6 @@
 import { Analytics } from "@vercel/analytics/next"
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -28,11 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      ><StackProvider app={stackServerApp}><StackTheme>
         <Analytics />
         <SpeedInsights />
         {children}
-      </body>
+      </StackTheme></StackProvider></body>
     </html>
   );
 }
