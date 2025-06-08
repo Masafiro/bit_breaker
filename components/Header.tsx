@@ -10,16 +10,14 @@ export default function Header() {
 
   return (
     <header style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: '1px solid #ccc', alignItems: 'center' }}>
-        表示して〜ー
       <Link href="/">
         Bit Breaker
       </Link>
       <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
         {user ? (
           <>
-            <span>ようこそ, {user.displayName || 'ユーザー'}さん</span>
-            <Link href="/settings">アカウント設定</Link>
-            <Link href="/ranking/time-attack">ランキング</Link>
+            <Link href="/ranking/time-attack">タイムアタックランキング</Link>
+            <Link href="/settings">{user.displayName || '名無し'}のアカウント設定</Link>
             <SignOutButton />
           </>
         ) : (

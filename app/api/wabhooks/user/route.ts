@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import { sql } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-// ★あなたが調べてくれた、Stack-Authの正しい型定義に置き換え
+// WebhookEventの型定義
 interface UserWebhookEvent {
   type: 'user.created' | 'user.updated' | 'user.deleted';
   data: {
@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Webhook secret is not configured' }, { status: 500 });
   }
 
-//   const headerPayload = headers();
   const headerPayload = req.headers;
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
@@ -50,12 +49,11 @@ export async function POST(req: NextRequest) {
 
   const eventType = evt.type;
 
+  // ユーザーが新規作成された場合の処理
   if (eventType === 'user.created') {
-    // ★★★ここが重要な変更点★★★
     const { id, primary_email, display_name } = evt.data;
     const email = primary_email;
     const name = display_name;
-    // ★★★★★★★★★★★★★★★★★★
 
     if (!id || !email) {
       return NextResponse.json({ message: 'Error: Missing user ID or email in webhook payload' }, { status: 400 });
