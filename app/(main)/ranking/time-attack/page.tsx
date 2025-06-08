@@ -20,13 +20,10 @@ interface AllRankings {
 // ランキングリストを表示するための再利用可能なコンポーネント
 const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
   const formatTime = (milliseconds: number) => {
-    if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
-    const totalSeconds = milliseconds / 1000;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    const ms = milliseconds % 1000;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
-  };
+  if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
+  const seconds = milliseconds / 1000;
+  return `${seconds.toFixed(2)}秒`;
+};
 
   return (
     <div style={{ flex: 1, padding: '0 1rem' }}>

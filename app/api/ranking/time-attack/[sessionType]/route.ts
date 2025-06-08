@@ -1,16 +1,16 @@
 import { sql } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
+// ★★★ ここが重要な修正点 ★★★
+// 関数の2番目の引数を、分割代入せずに context という名前で受け取る
 export async function GET(
   req: NextRequest,
-  { params }: { params: { sessionType: string } }
+  context: { params: { sessionType: string } }
 ) {
   try {
-    // URLからセッションタイプを取得
-    const { sessionType } = params;
+    // ★ context オブジェクトから params を取り出し、さらに sessionType を取り出す
+    const { sessionType } = context.params;
 
-    // ランキングを取得するためのSQLクエリ
-    // DENSE_RANK() を使うことで、同タイムの場合に同じ順位をつけ、次の順位を飛ばさないようにする
     const query = `
       SELECT
         DENSE_RANK() OVER (ORDER BY T."bestTime" ASC) as "rank",
@@ -32,7 +32,9 @@ export async function GET(
     return NextResponse.json(rankingData);
 
   } catch (error) {
-    console.error(`Ranking API error for ${params.sessionType}:`, error);
+    // contextからsessionTypeを安全に取り出す
+    const sessionTypeForError = context?.params?.sessionType || 'unknown';
+    console.error(`Ranking API error for ${sessionTypeForError}:`, error);
     return NextResponse.json({ message: 'サーバーエラーが発生しました。' }, { status: 500 });
   }
 }
