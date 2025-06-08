@@ -1,6 +1,8 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // ランキングを取得したいセッションタイプを定義
 const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json'];
 
