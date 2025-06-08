@@ -610,11 +610,32 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
     if (typeof window !== "undefined"){
       correctAudioPlay(CORRECT_AUDIO_VOLUME);
     }
-    if (bitHistory.length - 1 === problem.minimum_moves){
-      localStorage.setItem(problemFileName, "SolvedMinimum");
-    } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
-      localStorage.setItem(problemFileName, "Solved");
-    }
+    // if (bitHistory.length - 1 === problem.minimum_moves){
+    //   localStorage.setItem(problemFileName, "SolvedMinimum");
+    // } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
+    //   localStorage.setItem(problemFileName, "Solved");
+    // }
+
+    // ★新しいステータスを決定
+    const newStatus = (bitHistory.length - 1 === problem.minimum_moves) ? "SOLVED_MINIMUM" : "SOLVED";
+
+    // ★localStorage.setItem の代わりに、新しいスコア送信APIを呼び出す
+    const submitResult = async () => {
+      try {
+        await fetch('/api/problem-mode/submit-result', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            problemNumber: 1, // ★TODO: problemオブジェクトから実際の番号を取得する
+            status: newStatus,
+          }),
+          credentials: 'include',
+        });
+      } catch (error) {
+        console.error("Failed to submit result:", error);
+      }
+    };
+    submitResult();
   }
 
   return (
@@ -716,7 +737,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
                 sessionType: timeAttackFileName,
                 time: solveTime,
               }),
-              credentials: 'include', // ★★★ これが重要 ★★★
+              credentials: 'include', // ★★★ これが重要 (cookies 情報) ★★★
             });
           } catch (error) {
             console.error("Failed to submit score:", error);
