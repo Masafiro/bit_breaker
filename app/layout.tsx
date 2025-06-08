@@ -34,7 +34,6 @@ export default function RootLayout({
       ><StackProvider app={stackServerApp}><StackTheme>
         <Analytics />
         <SpeedInsights />
-        {/* <Header /> */}
         {children}
       </StackTheme></StackProvider></body>
     </html>

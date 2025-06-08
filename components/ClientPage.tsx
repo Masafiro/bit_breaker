@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useEffect, useState, useReducer} from "react";
-import './globals.css';
 // import { time } from "console";
 // import next from "next";
 // import { ReadStream } from "fs";
 import Image from 'next/image'
-import { useAudio } from "./hooks/useAudio";
+import { useAudio } from "../app/hooks/useAudio";
 // import { neon } from '@neondatabase/serverless';
 // import { createComment } from './actions/createComment';
 // import { getDisplayName } from "next/dist/shared/lib/utils";
@@ -822,8 +821,8 @@ export function ClientPage({ user }: { user: {displayName: string } | null }) {
     case "TitleScreen":
         return(
           <div>
-            <SignOutButton />
-            {user && <p className="welcome">ようこそ、{user.displayName}さん！</p>}
+            {/* <SignOutButton /> */}
+            {/* {user && <p className</div>="welcome">ようこそ、{user.displayName}さん！</p>} */}
             <Title />
             <ModeSelection setStatus={setStatus} />
           </div>
