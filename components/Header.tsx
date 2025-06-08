@@ -17,7 +17,7 @@ export default function Header() {
         {user ? (
           <>
             <Link href="/ranking/time-attack">タイムアタックランキング</Link>
-            <Link href="/settings">{user.displayName || '名無し'}のアカウント設定</Link>
+            <Link href="/settings">{user.displayName || 'unknown'}のアカウント設定</Link>
             <SignOutButton />
           </>
         ) : (

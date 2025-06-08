@@ -84,7 +84,7 @@ export default function TimeAttackRankingPage() {
           {ranking.map((entry) => (
             <li key={`${entry.rank}-${entry.userName}`}>
               <span>{entry.rank}位: </span>
-              <strong>{entry.userName || '名無しさん'}</strong>
+              <strong>{entry.userName || 'unknown'}</strong>
               <span> - {formatTime(entry.bestTime)}</span>
             </li>
           ))}

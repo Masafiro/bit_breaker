@@ -20,27 +20,40 @@ interface AllRankings {
 // ランキングリストを表示するための再利用可能なコンポーネント
 const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
   const formatTime = (milliseconds: number) => {
-  if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
-  const seconds = milliseconds / 1000;
-  return `${seconds.toFixed(2)}秒`;
-};
+    if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
+    const seconds = milliseconds / 1000;
+    return `${seconds.toFixed(2)}秒`;
+  };
 
   return (
-    <div style={{ flex: 1, padding: '0 1rem' }}>
+    <div style={{ flex: 1, minWidth: '300px' }}>
       <h2>{title}</h2>
-      <ol>
-        {data && data.length > 0 ? (
-          data.map((entry) => (
-            <li key={`${entry.rank}-${entry.userName}`}>
-              <span>{entry.rank}位: </span>
-              <strong>{entry.userName || '名無しさん'}</strong>
-              <span> - {formatTime(entry.bestTime)}</span>
-            </li>
-          ))
-        ) : (
-          <p>このモードのランキングはまだありません。</p>
-        )}
-      </ol>
+      {/* ★ olの代わりにtableタグを使う */}
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #444' }}>順位</th>
+            <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #444' }}>名前</th>
+            <th style={{ textAlign: 'right', padding: '8px', borderBottom: '1px solid #444' }}>タイム</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data && data.length > 0 ? (
+            data.map((entry) => (
+              // ★ liの代わりにtr(テーブル行)とtd(テーブルセル)を使う
+              <tr key={`${entry.rank}-${entry.userName}`}>
+                <td style={{ padding: '8px' }}>{entry.rank}位</td>
+                <td style={{ padding: '8px' }}><strong>{entry.userName || 'unknown'}</strong></td>
+                <td style={{ textAlign: 'right', padding: '8px' }}>{formatTime(entry.bestTime)}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} style={{ padding: '1rem', textAlign: 'center' }}>このモードのランキングはまだありません。</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -80,8 +93,13 @@ export default function AllTimeAttackRankingsPage() {
     <div style={{ padding: '2rem' }}>
       <h1>タイムアタック ランキング</h1>
       
-      {/* 3つのランキングを横に並べて表示 */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-around',
+        gap: '1rem',
+        width: '100%',
+        marginTop: '2rem'
+      }}>
         <RankingList title="5桁 1手 10問" data={allRankings?.['time_attack1.json'] || []} />
         <RankingList title="5桁 2手 10問" data={allRankings?.['time_attack2.json'] || []} />
         <RankingList title="5桁 3手 10問" data={allRankings?.['time_attack3.json'] || []} />
