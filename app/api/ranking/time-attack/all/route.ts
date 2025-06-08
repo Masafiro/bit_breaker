@@ -6,7 +6,6 @@ const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.js
 
 export async function GET() {
   try {
-    // 各セッションタイプのランキング取得クエリを準備
     const queries = sessionTypes.map(sessionType => {
       const query = `
         SELECT
@@ -15,25 +14,25 @@ export async function GET() {
           T."bestTime"
         FROM
           "TimeAttackBestTime" T
-        JOIN
+        LEFT JOIN
           "User" U ON T."userId" = U.id
         WHERE
           T."sessionType" = $1
         ORDER BY
           T."bestTime" ASC
-        LIMIT 50; -- 上位10件に絞るなど、件数を調整
+        LIMIT 100;
       `;
-      return sql(query, [sessionType]);
+      return sql.query(query, [sessionType]);
     });
 
-    // 3つのクエリを並行して実行し、すべての結果を待つ
     const results = await Promise.all(queries);
 
-    // フロントエンドで扱いやすいように、結果を整形
+    // ★★★ ここが重要な修正点 ★★★
+    // フロントエンドで扱いやすいように、結果の.rowsプロパティを抽出して整形する
     const allRankings = {
-      [sessionTypes[0]]: results[0], // "time_attack1.json": [...]
-      [sessionTypes[1]]: results[1], // "time_attack2.json": [...]
-      [sessionTypes[2]]: results[2], // "time_attack3.json": [...]
+      [sessionTypes[0]]: results[0].rows, // .rows を追加
+      [sessionTypes[1]]: results[1].rows, // .rows を追加
+      [sessionTypes[2]]: results[2].rows, // .rows を追加
     };
 
     return NextResponse.json(allRankings);

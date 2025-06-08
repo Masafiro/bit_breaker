@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       DO UPDATE SET "status" = EXCLUDED.status;
     `;
     
-    await sql(query, [sessionId, problemNumber, status]);
+    await sql.query(query, [sessionId, problemNumber, status]);
 
     return NextResponse.json({ message: 'Result saved successfully' }, { status: 200 });
 

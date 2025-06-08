@@ -23,7 +23,7 @@ export async function PUT(req: NextRequest) {
       SET "name" = $1
       WHERE "id" = $2;
     `;
-    await sql(query, [displayName, userId]);
+    await sql.query(query, [displayName, userId]);
 
     return NextResponse.json({ message: '名前を更新しました。' });
 

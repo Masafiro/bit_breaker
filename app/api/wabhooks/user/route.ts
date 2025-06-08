@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     `;
 
     try {
-      await sql(query, [id, email, name]);
+      await sql.query(query, [id, email, name]);
       console.log(`User ${id} successfully inserted into the database.`);
     } catch (dbError) {
       console.error('Error inserting user into DB:', dbError);

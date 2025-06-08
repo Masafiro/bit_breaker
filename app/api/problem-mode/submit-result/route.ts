@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     }
     const userId = user.id;
 
-    const userInDbResult = await sql('SELECT id FROM "User" WHERE id = $1', [userId]);
-    if (userInDbResult.length === 0) {
-      await sql('INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3)', [userId, user.primaryEmail, user.displayName]);
+    const userInDbResult = await sql.query('SELECT id FROM "User" WHERE id = $1', [userId]);
+    if (userInDbResult.rows.length === 0) {
+      await sql.query('INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3)', [userId, user.primaryEmail, user.displayName]);
     }
     
     // ★ problemNumberの代わりにproblemIdを受け取る
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         (CASE "ProblemBestResult".status WHEN 'SOLVED' THEN 1 WHEN 'SOLVED_MINIMUM' THEN 2 ELSE 0 END);
     `;
 
-    await sql(query, [userId, problemId, status]);
+    await sql.query(query, [userId, problemId, status]);
     return NextResponse.json({ message: 'Result submitted successfully' });
 
   } catch (error) {

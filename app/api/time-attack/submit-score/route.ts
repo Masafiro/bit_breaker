@@ -14,12 +14,12 @@ export async function POST(req: NextRequest) {
     const userId = user.id;
     console.log(`[API AUTH] User authenticated. UserID: ${userId}`);
 
-    const userInDbResult = await sql('SELECT id FROM "User" WHERE id = $1', [userId]);
-    if (userInDbResult.length === 0) {
+    const userInDbResult = await sql.query('SELECT id FROM "User" WHERE id = $1', [userId]);
+    if (userInDbResult.rows.length === 0) {
       console.log(`[API SYNC] User not found in local DB. Creating user...`);
       const email = user.primaryEmail;
       const name = user.displayName;
-      await sql('INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3)', [userId, email, name]);
+      await sql.query('INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3)', [userId, email, name]);
       console.log(`[API SYNC] User ${userId} created in local DB.`);
     } else {
       console.log(`[API SYNC] User ${userId} already exists in local DB.`);
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     `;
     
     console.log('[API DB] Executing UPSERT query...');
-    const result = await sql(query, [userId, sessionType, time]);
+    const result = await sql.query(query, [userId, sessionType, time]);
     console.log('[API DB] Query finished. Result:', result);
 
     return NextResponse.json({ message: 'Score submitted successfully' });

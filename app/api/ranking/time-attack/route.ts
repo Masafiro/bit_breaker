@@ -25,7 +25,7 @@ export async function GET() {
       LIMIT 100;
     `;
 
-    const rankingData = await sql(query, [sessionType]);
+    const rankingData = await sql.query(query, [sessionType]);
     return NextResponse.json(rankingData);
 
   } catch (error) {
