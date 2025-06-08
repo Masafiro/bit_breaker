@@ -29,6 +29,7 @@ const UNDO_AUDIO_VOLUME: number = 0.2;
 const DISABLED_AUDIO_VOLUME: number = 0.15;
 
 const UNDO_PENALTY: number = 10000;
+const MOVE_PENALTY_RATE: number = 10000;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -638,37 +639,45 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
     fetchProblem();
   }, []);
 
-  if (bitHistory[bitHistory.length - 1] === problem.target){
-    if (typeof window !== "undefined"){
-      correctAudioPlay(CORRECT_AUDIO_VOLUME);
-    }
-    // if (bitHistory.length - 1 === problem.minimum_moves){
-    //   localStorage.setItem(problemFileName, "SolvedMinimum");
-    // } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
-    //   localStorage.setItem(problemFileName, "Solved");
-    // }
 
-    // ★新しいステータスを決定
-    const newStatus = (bitHistory.length - 1 === problem.minimum_moves) ? "SOLVED_MINIMUM" : "SOLVED";
+  useEffect(() => {
+    if (bitHistory[bitHistory.length - 1] === problem.target){
 
-    // ★localStorage.setItem の代わりに、新しいスコア送信APIを呼び出す
-    const submitResult = async () => {
-      try {
-        await fetch('/api/problem-mode/submit-result', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            problemId: problemFileName, // ★TODO: problemオブジェクトから実際の番号を取得する
-            status: newStatus,
-          }),
-          credentials: 'include',
-        });
-      } catch (error) {
-        console.error("Failed to submit result:", error);
+    const moveCount = Math.max(bitHistory.length - 1, 0);
+    const penalty = Math.max(moveCount - problem.minimum_moves, 0) * MOVE_PENALTY_RATE;
+    setTime(time => time + penalty);
+    
+      if (typeof window !== "undefined"){
+        correctAudioPlay(CORRECT_AUDIO_VOLUME);
       }
-    };
-    submitResult();
-  }
+      // if (bitHistory.length - 1 === problem.minimum_moves){
+      //   localStorage.setItem(problemFileName, "SolvedMinimum");
+      // } else if (localStorage.getItem(problemFileName) !== "SolvedMinimum"){
+      //   localStorage.setItem(problemFileName, "Solved");
+      // }
+
+      // ★新しいステータスを決定
+      const newStatus = (bitHistory.length - 1 === problem.minimum_moves) ? "SOLVED_MINIMUM" : "SOLVED";
+
+      // ★localStorage.setItem の代わりに、新しいスコア送信APIを呼び出す
+      const submitResult = async () => {
+        try {
+          await fetch('/api/problem-mode/submit-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              problemId: problemFileName, // ★TODO: problemオブジェクトから実際の番号を取得する
+              status: newStatus,
+            }),
+            credentials: 'include',
+          });
+        } catch (error) {
+          console.error("Failed to submit result:", error);
+        }
+      };
+      submitResult();
+    }
+  }, [bitHistory]);
 
   return (
     <div className="gameInfo">
@@ -745,6 +754,10 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
 
   useEffect(() => {
     if (bitHistory.length > 0 && bitHistory[bitHistory.length - 1] === problem.target){
+      const moveCount = Math.max(bitHistory.length - 1, 0);
+      const penalty = Math.max(moveCount - problem.minimum_moves, 0) * MOVE_PENALTY_RATE;
+      setTime(time => time + penalty);
+
       setTimeActive(false);
       correctAudioPlay(CORRECT_AUDIO_VOLUME);
       const nextSolvedProblemCount = solvedProblemCount + 1;
