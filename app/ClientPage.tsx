@@ -267,9 +267,9 @@ function ProblemButtonContainer({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ProblemButton({ problemName, problemFile, setStatus }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>> }) {
+function ProblemButton({ problemName, problemFile, setStatus, problemStatus  }: { problemName: string, problemFile: string, setStatus: React.Dispatch<React.SetStateAction<Status>>, problemStatus?: string  }) {
   const navigationAudioPlay = useAudio(NAVIGATION_AUDIO_PATH);
-  if (localStorage.getItem(problemFile) == "Solved"){
+  if (problemStatus === "SOLVED"){
     return (
       <button className="problemButtonSolved" onClick={() => {
         navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
@@ -278,7 +278,7 @@ function ProblemButton({ problemName, problemFile, setStatus }: { problemName: s
         {problemName}
       </button>
     );
-  } else if (localStorage.getItem(problemFile) == "SolvedMinimum"){
+  } else if (problemStatus === "SOLVED_MINIMUM"){
     return (
       <button className="problemButtonSolvedMinimum" onClick={() => {
         navigationAudioPlay(NAVIGATION_AUDIO_VOLUME), 
@@ -365,60 +365,93 @@ function ModeSelection({setStatus}: {setStatus: React.Dispatch<React.SetStateAct
 }
 
 function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetStateAction<Status>>}) {
-  const solvedproblem1 = localStorage.getItem('problem1.json');
+  // クリア状況を保持するためのstateを追加
+  const [problemStatuses, setProblemStatuses] = useState<{ [key: string]: string }>({});
+
+  // ページ表示時に、APIを呼び出してクリア状況を取得する
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const response = await fetch('/api/problem-mode/user-statuses', {
+          credentials: 'include', // 認証情報（クッキー）をリクエストに含める
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setProblemStatuses(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch problem statuses:", error);
+      }
+    };
+
+    fetchStatuses();
+  }, []);
+
+  const problems = [
+    { name: '1', file: 't1.json' },
+    { name: '2', file: 't2.json' },
+    { name: '3', file: 't3.json' },
+    { name: '4', file: 't4.json' },
+    { name: '5', file: 't5.json' },
+    { name: '6', file: '4201.json' },
+    { name: '7', file: '4202.json' },
+    { name: '8', file: '4203.json' },
+    { name: '9', file: '4204.json' },
+    { name: '10', file: '4205.json' },
+    { name: '11', file: '4206.json' },
+    { name: '12', file: '4207.json' },
+    { name: '13', file: '4208.json' },
+    { name: '14', file: '4209.json' },
+    { name: '15', file: '4210.json' },
+    { name: '16', file: '4301.json' },
+    { name: '17', file: '4302.json' },
+    { name: '18', file: '4303.json' },
+    { name: '19', file: '4304.json' },
+    { name: '20', file: '4305.json' },
+    { name: '21', file: '5201.json' },
+    { name: '22', file: '5202.json' },
+    { name: '23', file: '5203.json' },
+    { name: '24', file: '5204.json' },
+    { name: '25', file: '5205.json' },
+    { name: '26', file: '5206.json' },
+    { name: '27', file: '5207.json' },
+    { name: '28', file: '5208.json' },
+    { name: '29', file: '5209.json' },
+    { name: '30', file: '5210.json' },
+    { name: '31', file: '5301.json' },
+    { name: '32', file: '5302.json' },
+    { name: '33', file: '5303.json' },
+    { name: '34', file: '5304.json' },
+    { name: '35', file: '5305.json' },
+    { name: '36', file: '5306.json' },
+    { name: '37', file: '5307.json' },
+    { name: '38', file: '5308.json' },
+    { name: '39', file: '5309.json' },
+    { name: '40', file: '5310.json' },
+    { name: '41', file: '5311.json' },
+    { name: '42', file: '5312.json' },
+    { name: '43', file: '5313.json' },
+    { name: '44', file: '5314.json' },
+    { name: '45', file: '5315.json' },
+    { name: '46', file: '5316.json' },
+    { name: '47', file: '5317.json' },
+    { name: '48', file: '5318.json' },
+    { name: '49', file: '5319.json' },
+    { name: '50', file: '5320.json' },
+  ];
+
   return (
     <div>
       <ProblemButtonContainer>
-        <ProblemButton problemName="1" problemFile="t1.json" setStatus={setStatus} />
-        <ProblemButton problemName="2" problemFile="t2.json" setStatus={setStatus} />
-        <ProblemButton problemName="3" problemFile="t3.json" setStatus={setStatus} />
-        <ProblemButton problemName="4" problemFile="t4.json" setStatus={setStatus} />
-        <ProblemButton problemName="5" problemFile="t5.json" setStatus={setStatus} />
-        <ProblemButton problemName="6" problemFile="4201.json" setStatus={setStatus} />
-        <ProblemButton problemName="7" problemFile="4202.json" setStatus={setStatus} />
-        <ProblemButton problemName="8" problemFile="4203.json" setStatus={setStatus} />
-        <ProblemButton problemName="9" problemFile="4204.json" setStatus={setStatus} />
-        <ProblemButton problemName="10" problemFile="4205.json" setStatus={setStatus} />
-        <ProblemButton problemName="11" problemFile="4206.json" setStatus={setStatus} />
-        <ProblemButton problemName="12" problemFile="4207.json" setStatus={setStatus} />
-        <ProblemButton problemName="13" problemFile="4208.json" setStatus={setStatus} />
-        <ProblemButton problemName="14" problemFile="4209.json" setStatus={setStatus} />
-        <ProblemButton problemName="15" problemFile="4210.json" setStatus={setStatus} />
-        <ProblemButton problemName="16" problemFile="4301.json" setStatus={setStatus} />
-        <ProblemButton problemName="17" problemFile="4302.json" setStatus={setStatus} />
-        <ProblemButton problemName="18" problemFile="4303.json" setStatus={setStatus} />
-        <ProblemButton problemName="19" problemFile="4304.json" setStatus={setStatus} />
-        <ProblemButton problemName="20" problemFile="4305.json" setStatus={setStatus} />
-        <ProblemButton problemName="21" problemFile="5201.json" setStatus={setStatus} />
-        <ProblemButton problemName="22" problemFile="5202.json" setStatus={setStatus} />
-        <ProblemButton problemName="23" problemFile="5203.json" setStatus={setStatus} />
-        <ProblemButton problemName="24" problemFile="5204.json" setStatus={setStatus} />
-        <ProblemButton problemName="25" problemFile="5205.json" setStatus={setStatus} />
-        <ProblemButton problemName="26" problemFile="5206.json" setStatus={setStatus} />
-        <ProblemButton problemName="27" problemFile="5207.json" setStatus={setStatus} />
-        <ProblemButton problemName="28" problemFile="5208.json" setStatus={setStatus} />
-        <ProblemButton problemName="29" problemFile="5209.json" setStatus={setStatus} />
-        <ProblemButton problemName="30" problemFile="5210.json" setStatus={setStatus} />
-        <ProblemButton problemName="31" problemFile="5301.json" setStatus={setStatus} />
-        <ProblemButton problemName="32" problemFile="5302.json" setStatus={setStatus} />
-        <ProblemButton problemName="33" problemFile="5303.json" setStatus={setStatus} />
-        <ProblemButton problemName="34" problemFile="5304.json" setStatus={setStatus} />
-        <ProblemButton problemName="35" problemFile="5305.json" setStatus={setStatus} />
-        <ProblemButton problemName="36" problemFile="5306.json" setStatus={setStatus} />
-        <ProblemButton problemName="37" problemFile="5307.json" setStatus={setStatus} />
-        <ProblemButton problemName="38" problemFile="5308.json" setStatus={setStatus} />
-        <ProblemButton problemName="39" problemFile="5309.json" setStatus={setStatus} />
-        <ProblemButton problemName="40" problemFile="5310.json" setStatus={setStatus} />
-        <ProblemButton problemName="41" problemFile="5311.json" setStatus={setStatus} />
-        <ProblemButton problemName="42" problemFile="5312.json" setStatus={setStatus} />
-        <ProblemButton problemName="43" problemFile="5313.json" setStatus={setStatus} />
-        <ProblemButton problemName="44" problemFile="5314.json" setStatus={setStatus} />
-        <ProblemButton problemName="45" problemFile="5315.json" setStatus={setStatus} />
-        <ProblemButton problemName="46" problemFile="5316.json" setStatus={setStatus} />
-        <ProblemButton problemName="47" problemFile="5317.json" setStatus={setStatus} />
-        <ProblemButton problemName="48" problemFile="5318.json" setStatus={setStatus} />
-        <ProblemButton problemName="49" problemFile="5319.json" setStatus={setStatus} />
-        <ProblemButton problemName="50" problemFile="5320.json" setStatus={setStatus} />
+        {problems.map((problem) => (
+          <ProblemButton
+            key={problem.name}
+            problemName={problem.name}
+            problemFile={problem.file}
+            setStatus={setStatus}
+            problemStatus={problemStatuses[problem.file]}
+          />
+        ))}
       </ProblemButtonContainer>
       <div className="returnContainer">
         <ReturnToTitleButton setStatus={setStatus} />
@@ -626,7 +659,7 @@ function ProblemModeGame({ setStatus, problemFileName }: { setStatus: React.Disp
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            problemNumber: 1, // ★TODO: problemオブジェクトから実際の番号を取得する
+            problemId: problemFileName, // ★TODO: problemオブジェクトから実際の番号を取得する
             status: newStatus,
           }),
           credentials: 'include',
