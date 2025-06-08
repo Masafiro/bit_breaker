@@ -70,6 +70,7 @@ export default function AllTimeAttackRankingsPage() {
       try {
         const response = await fetch('/api/ranking/time-attack/all', {
           credentials: 'include',
+          cache: 'no-store', // キャッシュを無効化して最新のデータを取得
         });
         if (!response.ok) {
           throw new Error('ランキングの取得に失敗しました。');
