@@ -2,6 +2,8 @@ import { sql } from '@/lib/db';
 import { stackServerApp } from "@/stack";
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 interface BestTimeRow {
   sessionType: string;
   bestTime: number;

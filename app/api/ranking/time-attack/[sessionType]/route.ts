@@ -1,6 +1,8 @@
 import { sql } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // ★★★ ここが重要な修正点 ★★★
 // 関数の2番目の引数を、分割代入せずに context という名前で受け取る
 export async function GET(
