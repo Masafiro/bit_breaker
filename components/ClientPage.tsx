@@ -27,8 +27,8 @@ const NAVIGATION_AUDIO_VOLUME: number = 0.2;
 const UNDO_AUDIO_VOLUME: number = 0.2;
 const DISABLED_AUDIO_VOLUME: number = 0.15;
 
-const UNDO_PENALTY: number = 10000;
-const MOVE_PENALTY_RATE: number = 10000;
+const UNDO_PENALTY: number = 10000/1.111;
+const MOVE_PENALTY_RATE: number = 10000/1.111;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -517,10 +517,10 @@ function TimeAttackSelection({ setStatus }: { setStatus: React.Dispatch<React.Se
     <div>
       <div>
       <TimeAttackButtonContainer>
-        <TimeAttackButton timeAttackName="タイムアタック easy" timeAttackFile="time_attack1.json" setStatus={setStatus} bestTime={bestTimes['time_attack1.json']} />
-        <TimeAttackButton timeAttackName="タイムアタック normal" timeAttackFile="time_attack2.json" setStatus={setStatus} bestTime={bestTimes['time_attack2.json']} />
-        <TimeAttackButton timeAttackName="タイムアタック hard" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
-        <TimeAttackButton timeAttackName="タイムアタック extra" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック  Easy" timeAttackFile="time_attack1.json" setStatus={setStatus} bestTime={bestTimes['time_attack1.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック Normal" timeAttackFile="time_attack2.json" setStatus={setStatus} bestTime={bestTimes['time_attack2.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック  Hard" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック  Extra" timeAttackFile="time_attack4.json" setStatus={setStatus} bestTime={bestTimes['time_attack4.json']} />
       </TimeAttackButtonContainer>
       </div>
       <div>
