@@ -150,6 +150,7 @@ body {
   display: grid;
   justify-content: center;
   align-items: center;
+  justify-items: stretch;  
 }
 
 .problemButtonSolvedMinimum {
@@ -193,6 +194,7 @@ body {
 
 
 .timeAttackButtonUnplayed{
+    width: 100%;    
   padding: 12px 30px;
   background-color: #007bff;
   color: white;
@@ -204,6 +206,7 @@ body {
 }
 
 .timeAttackButtonPlayed{
+    width: 100%;    
   padding: 12px 30px;
   background-color: #7ae3ec;
   color: black;

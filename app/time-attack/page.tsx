@@ -13,9 +13,10 @@ interface RankEntry {
 
 // セッションタイプの定義
 const sessionTypes = [
-  { key: 'time_attack1.json', name: '5桁 1手 10問' },
-  { key: 'time_attack2.json', name: '5桁 2手 10問' },
-  { key: 'time_attack3.json', name: '5桁 3手 10問' },
+  { key: 'time_attack1.json', name: 'Easy' },
+  { key: 'time_attack2.json', name: 'Normal' },
+  { key: 'time_attack3.json', name: 'Hard' },
+  { key: 'time_attack4.json', name: 'Extra' },
 ];
 
 export default function TimeAttackRankingPage() {

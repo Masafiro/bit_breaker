@@ -10,11 +10,12 @@ interface RankEntry {
   bestTime: number;
 }
 
-// 3つのランキングデータを保持するstateの型
+// 4つのランキングデータを保持するstateの型
 interface AllRankings {
   'time_attack1.json': RankEntry[];
   'time_attack2.json': RankEntry[];
   'time_attack3.json': RankEntry[];
+  'time_attack4.json': RankEntry[];
 }
 
 // ランキングリストを表示するための再利用可能なコンポーネント
@@ -101,9 +102,10 @@ export default function AllTimeAttackRankingsPage() {
         width: '100%',
         marginTop: '2rem'
       }}>
-        <RankingList title="5桁 1手 10問" data={allRankings?.['time_attack1.json'] || []} />
-        <RankingList title="5桁 2手 10問" data={allRankings?.['time_attack2.json'] || []} />
-        <RankingList title="5桁 3手 10問" data={allRankings?.['time_attack3.json'] || []} />
+        <RankingList title="Easy" data={allRankings?.['time_attack1.json'] || []} />
+        <RankingList title="Normal" data={allRankings?.['time_attack2.json'] || []} />
+        <RankingList title="Hard" data={allRankings?.['time_attack3.json'] || []} />
+        <RankingList title="Extra" data={allRankings?.['time_attack4.json'] || []} />
       </div>
 
       <br />

@@ -12,10 +12,11 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@stackframe/stack": "^2.8.12",
+    "@stackframe/stack-shared": "^2.8.12",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "geist": "^1.4.2",
-    "next": "14.2.3",
+    "next": "^15.3.3",
     "node-pg-migrate": "^8.0.2",
     "pg": "^8.16.0",
     "react": "^18.2.0",
