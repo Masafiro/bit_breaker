@@ -38,7 +38,14 @@ export async function GET() {
       [sessionTypes[3]]: results[3].rows, // .rows を追加
     };
 
-    return NextResponse.json(allRankings);
+    return NextResponse.json(allRankings, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
 
   } catch (error) {
     console.error(`All Ranking API error:`, error);

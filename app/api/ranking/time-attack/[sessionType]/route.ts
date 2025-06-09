@@ -31,7 +31,14 @@ export async function GET(
 
     const rankingData = await sql.query(query, [sessionType]);
 
-    return NextResponse.json(rankingData);
+    return NextResponse.json(rankingData, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
 
   } catch (error) {
     // contextからsessionTypeを安全に取り出す
