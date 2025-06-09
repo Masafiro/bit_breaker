@@ -3,11 +3,9 @@ import { StackProvider, StackTheme } from "@stackframe/stack";
 import { stackServerApp } from "../stack";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
-import { GeistSans } from "geist/font/sans"; // ★ 変更点
-import { GeistMono } from "geist/font/mono";  // ★ 変更点
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import Header from "@/components/Header";
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
@@ -27,9 +25,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       ><StackProvider app={stackServerApp}><StackTheme>
-        <Analytics />
-        <SpeedInsights />
-        {children}
+            <Analytics />
+            <SpeedInsights />
+            {children}
       </StackTheme></StackProvider></body>
     </html>
   );

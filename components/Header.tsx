@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { useUser } from '@stackframe/stack';
-import SignOutButton from './ui/SignOutButton';
+import { useUser, SignIn, SignUp } from '@stackframe/stack';
+import Image from 'next/image'; 
 
 export default function Header() {
   const user = useUser();
@@ -17,8 +17,15 @@ export default function Header() {
         {user ? (
           <>
             <Link href="/ranking/time-attack">タイムアタックランキング</Link>
-            <Link href="/settings">{user.displayName || 'unknown'}のアカウント設定</Link>
-            <SignOutButton />
+            <Link href="/account">
+              <Image
+                src={user.profileImageUrl || '/default-avatar.png'}
+                alt="アカウント設定"
+                width={32} 
+                height={32}
+                style={{ borderRadius: '50%' }} 
+              />
+            </Link>
           </>
         ) : (
           <>

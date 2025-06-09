@@ -10,7 +10,6 @@ import { useAudio } from "../app/hooks/useAudio";
 // import { createComment } from './actions/createComment';
 // import { getDisplayName } from "next/dist/shared/lib/utils";
 import { useUser } from "@stackframe/stack";
-import SignOutButton from '@/components/ui/SignOutButton';
 
 const BASE_PATH: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
