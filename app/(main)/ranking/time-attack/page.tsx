@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// ランキングデータの型定義
+// ランキングデータの型定義にuserIdを追加
 interface RankEntry {
   rank: string;
+  userId: string;
   userName: string;
   bestTime: number;
 }
@@ -27,9 +28,8 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
   };
 
   return (
-    <div style={{ flex: 1, minWidth: '300px' }}>
+    <div style={{ flex: '1 1 300px', minWidth: '300px' }}>
       <h2>{title}</h2>
-      {/* ★ olの代わりにtableタグを使う */}
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -41,8 +41,8 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
         <tbody>
           {data && data.length > 0 ? (
             data.map((entry) => (
-              // ★ liの代わりにtr(テーブル行)とtd(テーブルセル)を使う
-              <tr key={`${entry.rank}-${entry.userName}`}>
+              // ★ keyに、よりユニークなuserIdを使う
+              <tr key={entry.userId}>
                 <td style={{ padding: '8px' }}>{entry.rank}位</td>
                 <td style={{ padding: '8px' }}><strong>{entry.userName || 'unknown'}</strong></td>
                 <td style={{ textAlign: 'right', padding: '8px' }}>{formatTime(entry.bestTime)}</td>
@@ -66,12 +66,10 @@ export default function AllTimeAttackRankingsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // ページが読み込まれたら、新しいAPIを叩いて全ランキングデータを取得
     const fetchAllRankings = async () => {
       try {
         const response = await fetch('/api/ranking/time-attack/all', {
           credentials: 'include',
-          cache: 'no-store', // キャッシュを無効化して最新のデータを取得
         });
         if (!response.ok) {
           throw new Error('ランキングの取得に失敗しました。');
@@ -97,15 +95,16 @@ export default function AllTimeAttackRankingsPage() {
       
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-around',
-        gap: '1rem',
+        flexWrap: 'wrap', // 画面が狭い時に折り返すように
+        justifyContent: 'center',
+        gap: '2rem',
         width: '100%',
         marginTop: '2rem'
       }}>
-        <RankingList title="Easy" data={allRankings?.['time_attack1.json'] || []} />
-        <RankingList title="Normal" data={allRankings?.['time_attack2.json'] || []} />
-        <RankingList title="Hard" data={allRankings?.['time_attack3.json'] || []} />
-        <RankingList title="Extra" data={allRankings?.['time_attack4.json'] || []} />
+        <RankingList title="5桁 1手 10問" data={allRankings?.['time_attack1.json'] || []} />
+        <RankingList title="5桁 2手 10問" data={allRankings?.['time_attack2.json'] || []} />
+        <RankingList title="5桁 3手 10問" data={allRankings?.['time_attack3.json'] || []} />
+        <RankingList title="5桁 4手 10問" data={allRankings?.['time_attack4.json'] || []} />
       </div>
 
       <br />

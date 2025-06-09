@@ -12,6 +12,7 @@ export async function GET() {
       const query = `
         SELECT
           DENSE_RANK() OVER (ORDER BY T."bestTime" ASC) as "rank",
+          U.id AS "userId", -- ★ユーザーIDも取得するように追加
           U.name AS "userName",
           T."bestTime"
         FROM
@@ -27,19 +28,14 @@ export async function GET() {
       return sql.query(query, [sessionType]);
     });
 
-    const results = await Promise.all(queries);
+    const queryResults = await Promise.all(queries);
 
-    // ★★★ ここが重要な修正点 ★★★
-    // フロントエンドで扱いやすいように、結果の.rowsプロパティを抽出して整形する
-    const allRankings = {
-      [sessionTypes[0]]: results[0].rows, // .rows を追加
-      [sessionTypes[1]]: results[1].rows, // .rows を追加
-      [sessionTypes[2]]: results[2].rows, // .rows を追加
-      [sessionTypes[3]]: results[3].rows, // .rows を追加
-    };
+    const allRankings = sessionTypes.reduce((acc: { [key: string]: any[] }, sessionType, index) => {
+      acc[sessionType] = queryResults[index].rows;
+      return acc;
+    }, {});
 
     return NextResponse.json(allRankings, {
-      status: 200,
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'Pragma': 'no-cache',
