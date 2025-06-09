@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react'; // ★ useCallback をインポート
 import Link from 'next/link';
 
-// ランキングデータの型定義にuserIdを追加
+// ランキングデータの型定義
 interface RankEntry {
   rank: string;
   userId: string;
@@ -41,7 +41,6 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
         <tbody>
           {data && data.length > 0 ? (
             data.map((entry) => (
-              // ★ keyに、よりユニークなuserIdを使う
               <tr key={entry.userId}>
                 <td style={{ padding: '8px' }}>{entry.rank}位</td>
                 <td style={{ padding: '8px' }}><strong>{entry.userName || 'unknown'}</strong></td>
@@ -65,47 +64,60 @@ export default function AllTimeAttackRankingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAllRankings = async () => {
-      try {
-        const response = await fetch('/api/ranking/time-attack/all', {
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          throw new Error('ランキングの取得に失敗しました。');
-        }
-        const data = await response.json();
-        setAllRankings(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '不明なエラーです。');
-      } finally {
-        setIsLoading(false);
+  // ★ データを取得するロジックを、useCallbackで囲んで独立した関数にする
+  const fetchAllRankings = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/ranking/time-attack/all', {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      if (!response.ok) {
+        throw new Error('ランキングの取得に失敗しました。');
       }
-    };
+      const data = await response.json();
+      setAllRankings(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '不明なエラーです。');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []); // 依存配列は空でOK
 
+  // ページが最初に読み込まれた時に、一度だけデータを取得する
+  useEffect(() => {
     fetchAllRankings();
-  }, []);
+  }, [fetchAllRankings]);
 
-  if (isLoading) return <div>読み込み中...</div>;
   if (error) return <div>エラー: {error}</div>;
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>タイムアタック ランキング</h1>
-      
-      <div style={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', // 画面が狭い時に折り返すように
-        justifyContent: 'center',
-        gap: '2rem',
-        width: '100%',
-        marginTop: '2rem'
-      }}>
-        <RankingList title="5桁 1手 10問" data={allRankings?.['time_attack1.json'] || []} />
-        <RankingList title="5桁 2手 10問" data={allRankings?.['time_attack2.json'] || []} />
-        <RankingList title="5桁 3手 10問" data={allRankings?.['time_attack3.json'] || []} />
-        <RankingList title="5桁 4手 10問" data={allRankings?.['time_attack4.json'] || []} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+        <h1>タイムアタック ランキング</h1>
+        {/* ★ 更新ボタンを追加 */}
+        <button onClick={fetchAllRankings} disabled={isLoading}>
+          {isLoading ? '更新中...' : 'ランキングを更新'}
+        </button>
       </div>
+      
+      {isLoading ? (
+        <p>読み込み中...</p>
+      ) : (
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '2rem',
+          width: '100%',
+        }}>
+          <RankingList title="5桁 1手 10問" data={allRankings?.['time_attack1.json'] || []} />
+          <RankingList title="5桁 2手 10問" data={allRankings?.['time_attack2.json'] || []} />
+          <RankingList title="5桁 3手 10問" data={allRankings?.['time_attack3.json'] || []} />
+          <RankingList title="5桁 4手 10問" data={allRankings?.['time_attack4.json'] || []} />
+        </div>
+      )}
 
       <br />
       <Link href="/">ホームに戻る</Link>
