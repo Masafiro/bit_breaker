@@ -3,22 +3,21 @@ import { headers } from 'next/headers';
 import { sql } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-// WebhookEventの型定義
+// Webhookで送られてくるデータの型定義
 interface UserWebhookEvent {
   type: 'user.created' | 'user.updated' | 'user.deleted';
   data: {
     id: string;
-    primary_email: string;
-    display_name: string;
+    primary_email?: string; // updatedイベントでは無い可能性も考慮
+    display_name?: string;
     // ... その他のデータ
   };
 }
 
 export async function POST(req: NextRequest) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
-
   if (!WEBHOOK_SECRET) {
-    console.error('WEBHOOK_SECRET is not set in .env file');
+    console.error('WEBHOOK_SECRET is not set');
     return NextResponse.json({ message: 'Webhook secret is not configured' }, { status: 500 });
   }
 
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
   const svix_signature = headerPayload.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return NextResponse.json({ message: 'Error: Missing Svix headers' }, { status: 400 });
+    return NextResponse.json({ message: 'Missing Svix headers' }, { status: 400 });
   }
 
   const payload = await req.json();
@@ -49,27 +48,33 @@ export async function POST(req: NextRequest) {
 
   const eventType = evt.type;
 
-  // ユーザーが新規作成された場合の処理
+  // --- ユーザーが新規作成された場合の処理 ---
   if (eventType === 'user.created') {
     const { id, primary_email, display_name } = evt.data;
-    const email = primary_email;
-    const name = display_name;
-
-    if (!id || !email) {
-      return NextResponse.json({ message: 'Error: Missing user ID or email in webhook payload' }, { status: 400 });
+    if (!id || !primary_email) {
+      return NextResponse.json({ message: 'Missing data in user.created payload' }, { status: 400 });
     }
-
-    const query = `
-      INSERT INTO "User" (id, email, name)
-      VALUES ($1, $2, $3);
-    `;
-
+    const query = `INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3);`;
     try {
-      await sql.query(query, [id, email, name]);
-      console.log(`User ${id} successfully inserted into the database.`);
+      await sql.query(query, [id, primary_email, display_name || '']);
     } catch (dbError) {
-      console.error('Error inserting user into DB:', dbError);
+      console.error('DB error on user.created:', dbError);
       return NextResponse.json({ message: 'Database error while creating user' }, { status: 500 });
+    }
+  }
+
+  // ★★★ ユーザー情報が更新された場合の処理 ★★★
+  if (eventType === 'user.updated') {
+    const { id, display_name } = evt.data;
+    if (!id) {
+      return NextResponse.json({ message: 'Missing id in user.updated payload' }, { status: 400 });
+    }
+    const query = `UPDATE "User" SET "name" = $1 WHERE "id" = $2;`;
+    try {
+      await sql.query(query, [display_name || '', id]);
+    } catch (dbError) {
+      console.error('DB error on user.updated:', dbError);
+      return NextResponse.json({ message: 'Database error while updating user' }, { status: 500 });
     }
   }
 
