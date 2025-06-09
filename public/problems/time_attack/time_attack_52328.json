@@ -1,0 +1,22 @@
+{
+  "problem": {
+    "bit_length": 5,
+    "minimum_moves": 2,
+    "operation_count": 3,
+    "operations": [
+      {
+        "operation_type": "or",
+        "parameter": "01111"
+      },
+      {
+        "operation_type": "and",
+        "parameter": "01010"
+      },
+      {
+        "operation_type": "cyclic-lshift"
+      }
+    ],
+    "start": "00111",
+    "target": "01010"
+  }
+}

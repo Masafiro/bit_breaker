@@ -517,9 +517,10 @@ function TimeAttackSelection({ setStatus }: { setStatus: React.Dispatch<React.Se
     <div>
       <div>
       <TimeAttackButtonContainer>
-        <TimeAttackButton timeAttackName="5桁 1手 10問" timeAttackFile="time_attack1.json" setStatus={setStatus} bestTime={bestTimes['time_attack1.json']} />
-        <TimeAttackButton timeAttackName="5桁 2手 10問" timeAttackFile="time_attack2.json" setStatus={setStatus} bestTime={bestTimes['time_attack2.json']} />
-        <TimeAttackButton timeAttackName="5桁 3手 10問" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック easy" timeAttackFile="time_attack1.json" setStatus={setStatus} bestTime={bestTimes['time_attack1.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック normal" timeAttackFile="time_attack2.json" setStatus={setStatus} bestTime={bestTimes['time_attack2.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック hard" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
+        <TimeAttackButton timeAttackName="タイムアタック extra" timeAttackFile="time_attack3.json" setStatus={setStatus} bestTime={bestTimes['time_attack3.json']} />
       </TimeAttackButtonContainer>
       </div>
       <div>

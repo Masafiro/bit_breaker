@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 // ランキングを取得したいセッションタイプを定義
-const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json'];
+const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json', 'time_attack4.json'];
 
 export async function GET() {
   try {
@@ -35,6 +35,7 @@ export async function GET() {
       [sessionTypes[0]]: results[0].rows, // .rows を追加
       [sessionTypes[1]]: results[1].rows, // .rows を追加
       [sessionTypes[2]]: results[2].rows, // .rows を追加
+      [sessionTypes[3]]: results[3].rows, // .rows を追加
     };
 
     return NextResponse.json(allRankings);
