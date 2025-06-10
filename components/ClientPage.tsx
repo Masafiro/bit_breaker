@@ -27,8 +27,8 @@ const NAVIGATION_AUDIO_VOLUME: number = 0.2;
 const UNDO_AUDIO_VOLUME: number = 0.2;
 const DISABLED_AUDIO_VOLUME: number = 0.15;
 
-const UNDO_PENALTY: number = 10000/1.111;
-const MOVE_PENALTY_RATE: number = 10000/1.111;
+const UNDO_PENALTY: number = 10000/1.1342;
+const MOVE_PENALTY_RATE: number = 10000/1.1342;
 
 type Bit = string;
 type bitHistory = Bit[];
