@@ -566,7 +566,7 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   }, [time2]);
   return (
     <div>
-      タイム: {(time * 1.111 / 1000).toFixed(2)}秒
+      タイム: {(time * 1.1342 / 1000).toFixed(2)}秒
     </div>
   )
 }
@@ -766,7 +766,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
           setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
-        const solveTime = Math.round(time * 1.111 + 10);
+        const solveTime = Math.round(time * 1.1342 + 10);
         // if (localStorage.getItem(timeAttackFileName) == null){
         //   localStorage.setItem(timeAttackFileName, solveTime.toString());
         // } else {
