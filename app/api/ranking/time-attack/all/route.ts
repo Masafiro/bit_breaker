@@ -8,6 +8,9 @@ const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.js
 
 export async function GET() {
   try {
+    const generatedAt = new Date().toISOString();
+    console.log(`API executed at: ${generatedAt}`); // Vercelのログで確認用
+
     const queries = sessionTypes.map(sessionType => {
       const query = `
         SELECT
@@ -25,17 +28,25 @@ export async function GET() {
           T."bestTime" ASC
         LIMIT 100;
       `;
+      console.log(`[API DB] Preparing query for sessionType: ${sessionType}`);
       return sql.query(query, [sessionType]);
     });
 
     const queryResults = await Promise.all(queries);
+
+    console.log('[API DB] Raw results from Promise.all:', JSON.stringify(queryResults, null, 2));
 
     const allRankings = sessionTypes.reduce((acc: { [key: string]: any[] }, sessionType, index) => {
       acc[sessionType] = queryResults[index].rows;
       return acc;
     }, {});
 
-    return NextResponse.json(allRankings, {
+    console.log('[API RESPONSE] Final rankings object being sent:', JSON.stringify(allRankings, null, 2));
+
+    return NextResponse.json({
+        generatedAt: generatedAt,
+        rankings: allRankings
+    }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'Pragma': 'no-cache',

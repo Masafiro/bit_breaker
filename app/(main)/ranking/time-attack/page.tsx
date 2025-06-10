@@ -60,7 +60,7 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
 
 
 export default function AllTimeAttackRankingsPage() {
-  const [allRankings, setAllRankings] = useState<AllRankings | null>(null);
+  const [data, setData] = useState<{ generatedAt: string, rankings: AllRankings } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,8 +76,9 @@ export default function AllTimeAttackRankingsPage() {
       if (!response.ok) {
         throw new Error('ランキングの取得に失敗しました。');
       }
-      const data = await response.json();
-      setAllRankings(data);
+      const responseData = await response.json();
+      console.log('--- API Response Data ---:', responseData);
+      setData(responseData);
     } catch (err) {
       setError(err instanceof Error ? err.message : '不明なエラーです。');
     } finally {
@@ -90,17 +91,22 @@ export default function AllTimeAttackRankingsPage() {
     fetchAllRankings();
   }, [fetchAllRankings]);
 
+  console.log('--- Current State "data" is ---:', data);
+  console.log('--- Current State "data.rankings" is ---:', data?.rankings);
+  
   if (error) return <div>エラー: {error}</div>;
 
   return (
     <div style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
         <h1>タイムアタック ランキング</h1>
-        {/* ★ 更新ボタンを追加 */}
         <button onClick={fetchAllRankings} disabled={isLoading}>
           {isLoading ? '更新中...' : 'ランキングを更新'}
         </button>
       </div>
+
+      {/* ★ APIから返ってきた生成時刻を表示 */}
+      {data?.generatedAt && <p>データ生成時刻: {new Date(data.generatedAt).toLocaleString('ja-JP')}</p>}
       
       {isLoading ? (
         <p>読み込み中...</p>
@@ -112,10 +118,10 @@ export default function AllTimeAttackRankingsPage() {
           gap: '2rem',
           width: '100%',
         }}>
-          <RankingList title="Easy" data={allRankings?.['time_attack1.json'] || []} />
-          <RankingList title="Normal" data={allRankings?.['time_attack2.json'] || []} />
-          <RankingList title="Hard" data={allRankings?.['time_attack3.json'] || []} />
-          <RankingList title="Extra" data={allRankings?.['time_attack4.json'] || []} />
+          <RankingList title="Easy" data={data?.rankings?.['time_attack1.json'] || []} />
+          <RankingList title="Normal" data={data?.rankings?.['time_attack2.json'] || []} />
+          <RankingList title="Hard" data={data?.rankings?.['time_attack3.json'] || []} />
+          <RankingList title="Extra" data={data?.rankings?.['time_attack4.json'] || []} />
         </div>
       )}
 
