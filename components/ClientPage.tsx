@@ -27,8 +27,10 @@ const NAVIGATION_AUDIO_VOLUME: number = 0.2;
 const UNDO_AUDIO_VOLUME: number = 0.2;
 const DISABLED_AUDIO_VOLUME: number = 0.15;
 
-const UNDO_PENALTY: number = 10000/1.1342;
-const MOVE_PENALTY_RATE: number = 10000/1.1342;
+const TIME_RATE: number = 1.1342;
+const UNDO_PENALTY: number = 10000 / TIME_RATE;
+const RETRY_PENALTY: number = 10000 / TIME_RATE;
+const MOVE_PENALTY_RATE: number = 10000 / TIME_RATE;
 
 type Bit = string;
 type bitHistory = Bit[];
@@ -241,7 +243,7 @@ function RetryButton({ bitHistory, dispatchbitHistory, isActive, time, setTime }
         let initialBit = bitHistory[0];
         dispatchbitHistory({operation_type: "clear"});
         dispatchbitHistory({operation_type: "append", parameter: initialBit});
-        setTime(time => time + UNDO_PENALTY);
+        setTime(time => time + RETRY_PENALTY);
       }}>
         リトライ
       </button>
@@ -566,7 +568,7 @@ function Timer({ isActive, time, setTime }: { isActive : boolean, time: number, 
   }, [time2]);
   return (
     <div>
-      タイム: {(time * 1.1342 / 1000).toFixed(2)}秒
+      タイム: {(time * TIME_RATE / 1000).toFixed(2)}秒
     </div>
   )
 }
@@ -766,7 +768,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
           setCurrentProblem(nextSolvedProblemCount + 1);
         }, 1000);
       } else {
-        const solveTime = Math.round(time * 1.1342 + 10);
+        const solveTime = Math.round(time * TIME_RATE + 10);
         // if (localStorage.getItem(timeAttackFileName) == null){
         //   localStorage.setItem(timeAttackFileName, solveTime.toString());
         // } else {
