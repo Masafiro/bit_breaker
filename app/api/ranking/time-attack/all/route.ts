@@ -3,55 +3,56 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-// ランキングを取得したいセッションタイプを定義
-const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json', 'time_attack4.json'];
+// このAPIは認証を必要としない公開ランキングなので、userの取得は不要
 
 export async function GET() {
   try {
     const generatedAt = new Date().toISOString();
-    console.log(`API executed at: ${generatedAt}`); // Vercelのログで確認用
+    console.log(`API executed at: ${generatedAt}`);
 
-    const queries = sessionTypes.map(sessionType => {
-      const query = `
-        SELECT
-          DENSE_RANK() OVER (ORDER BY T."bestTime" ASC) as "rank",
-          U.id AS "userId", -- ★ユーザーIDも取得するように追加
-          U.name AS "userName",
-          T."bestTime"
-        FROM
-          "TimeAttackBestTime" T
-        LEFT JOIN
-          "User" U ON T."userId" = U.id
-        WHERE
-          T."sessionType" = $1
-        ORDER BY
-          T."bestTime" ASC
-        LIMIT 100;
-      `;
-      console.log(`[API DB] Preparing query for sessionType: ${sessionType}`);
-      return sql.query(query, [sessionType]);
+    // ★ ステップ1：2つのテーブルから、それぞれ生のデータを取得する
+    const timeAttackQuery = `SELECT "userId", "sessionType", "bestTime" FROM "TimeAttackBestTime" ORDER BY "bestTime" ASC;`;
+    const usersQuery = `SELECT id, name FROM "User";`;
+
+    const [timeAttackResults, userResults] = await Promise.all([
+      sql.query(timeAttackQuery),
+      sql.query(usersQuery)
+    ]);
+
+    // ★ ステップ2：ユーザーIDをキーにした、名前の検索マップを作成する
+    const userMap = new Map<string, string>();
+    userResults.rows.forEach(user => {
+      userMap.set(user.id, user.name);
     });
 
-    const queryResults = await Promise.all(queries);
+    // ★ ステップ3：JavaScriptでランキングデータを組み立てる
+    const allRankings: { [key: string]: any[] } = {
+      'time_attack1.json': [],
+      'time_attack2.json': [],
+      'time_attack3.json': [],
+      'time_attack4.json': [],
+    };
 
-    console.log('[API DB] Raw results from Promise.all:', JSON.stringify(queryResults, null, 2));
+    const rankCounters: { [key: string]: number } = {};
 
-    const allRankings = sessionTypes.reduce((acc: { [key: string]: any[] }, sessionType, index) => {
-      acc[sessionType] = queryResults[index].rows;
-      return acc;
-    }, {});
+    timeAttackResults.rows.forEach(score => {
+      const sessionType = score.sessionType;
+      if (allRankings[sessionType] && allRankings[sessionType].length < 100) {
+        // ランクカウンターをインクリメント
+        rankCounters[sessionType] = (rankCounters[sessionType] || 0) + 1;
 
-    console.log('[API RESPONSE] Final rankings object being sent:', JSON.stringify(allRankings, null, 2));
-
+        allRankings[sessionType].push({
+          rank: String(rankCounters[sessionType]),
+          userId: score.userId,
+          userName: userMap.get(score.userId) || 'unknown', // userMapから名前を検索
+          bestTime: score.bestTime,
+        });
+      }
+    });
+    
     return NextResponse.json({
-        generatedAt: generatedAt,
-        rankings: allRankings
-    }, {
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-      },
+      generatedAt: generatedAt,
+      rankings: allRankings
     });
 
   } catch (error) {
