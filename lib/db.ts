@@ -1,24 +1,20 @@
 import { neon } from '@neondatabase/serverless';
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 
 // Vercelの環境変数を見て、本番/プレビュー環境か、ローカル開発環境かを判断
 const isVercel = !!process.env.VERCEL_ENV;
 
-// ★★★ ここが最後の重要な修正点 ★★★
-// Vercel上では直接接続用のURLを、ローカルでは通常のURLを使うように切り替える
-const connectionString = isVercel
-  ? process.env.DATABASE_URL_UNPOOLED
-  : process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  throw new Error('Database connection string is not set in environment variables');
+  throw new Error('DATABASE_URL environment variable is not set');
 }
 
-// 接続クライアントを保持する変数
+// どちらのクライアントも .query メソッドを持つように、型をanyで許容
 let dbClient: { query: (text: string, params?: any[]) => Promise<any> };
 
 if (isVercel) {
-  console.log("Using Neon serverless driver (UNPOOLED) for Vercel environment.");
+  console.log("Using Neon serverless driver for Vercel environment.");
   // Vercel上では、@neondatabase/serverless を使う
   dbClient = {
     query: (text, params) => neon(connectionString).query(text, params),
@@ -33,7 +29,11 @@ if (isVercel) {
 // 処理を共通化するラッパー関数
 export const sql = {
   query: async (text: string, params: any[] = []): Promise<{ rows: any[] }> => {
-    const result: any = await dbClient.query(text, params);
+    const result = await dbClient.query(text, params);
+    
+    // pgドライバは{ rows: [...] }を返し、neonドライ
+    // バは直接[...]（配列）を返すことがあるため、
+    // 常に{ rows: [...] }の形に統一して返す。
     if (Array.isArray(result)) {
       return { rows: result };
     }
