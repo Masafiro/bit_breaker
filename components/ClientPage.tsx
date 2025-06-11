@@ -384,7 +384,6 @@ function ProblemSelection({ setStatus }: { setStatus: React.Dispatch<React.SetSt
         console.error("Failed to fetch problem statuses:", error);
       }
     };
-
     fetchStatuses();
   }, []);
 
@@ -769,11 +768,7 @@ function TimeAttackModeGame({ setStatus, timeAttackFileName }: { setStatus: Reac
         }, 1000);
       } else {
         const solveTime = Math.round(time * TIME_RATE + 10);
-        // if (localStorage.getItem(timeAttackFileName) == null){
-        //   localStorage.setItem(timeAttackFileName, solveTime.toString());
-        // } else {
-        //   localStorage.setItem(timeAttackFileName, Math.min(Number(localStorage.getItem(timeAttackFileName)), solveTime).toString())
-        // }
+
         // ★localStorage.setItem の代わりにAPIを呼び出す
         const submitScore = async () => {
           try {
