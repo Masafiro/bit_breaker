@@ -99,38 +99,35 @@ export default function AllTimeAttackRankingsPage() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      {/* ★★★ ここからが修正箇所 ★★★ */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-        <h1 style={{ fontSize: '1.5rem', position: 'absolute', left: '50%', transform: 'translateX(-50%)'}} >
-          <strong>タイムアタック ランキング</strong>
-        </h1>
-        
-        {/* 右側に時刻と更新ボタンをまとめる */}
-        <div style={{ textAlign: 'right', marginLeft: 'auto' }}>
-          {data?.generatedAt && (
-            <p style={{ fontSize: '0.8rem', color: '#888888', margin: 0 }}>
-              データ取得時刻: {new Date(data.generatedAt).toLocaleString('ja-JP')}
-            </p>
-          )}
-          {/* 更新ボタンをアイコンに変更し、時刻の隣に移動 */}
-          <button 
-            onClick={fetchAllRankings} 
-            disabled={isLoading}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem',
-              color: '#888888',
-            }}
-            title="ランキングを更新" // マウスオーバーで説明を表示
-          >
-            {isLoading 
-              ? <span style={{ fontSize: '0.8rem' }}>更新中...</span> 
-              : <RefreshCcw size={20} />
-            }
-          </button>
-        </div>
+      <div style={{ textAlign: 'center', position: 'relative', fontSize: '1.5rem' }}>
+        <h1><strong>タイムアタック ランキング</strong></h1>
+      </div>
+
+      {/* 更新ボタンと時刻表示の行 */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', marginBottom: '1rem' }}>
+        {data?.generatedAt && (
+          <p style={{ fontSize: '0.8rem', color: '#888888', margin: 0 }}>
+            データ取得時刻: {new Date(data.generatedAt).toLocaleString('ja-JP')}
+          </p>
+        )}
+        <button 
+          onClick={fetchAllRankings} 
+          disabled={isLoading}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            color: 'var(--foreground)',
+            opacity: 0.7,
+          }}
+          title="ランキングを更新"
+        >
+          {isLoading 
+            ? <span style={{ fontSize: '0.8rem' }}>更新中...</span> 
+            : <RefreshCcw size={20} />
+          }
+        </button>
       </div>
       
       {isLoading ? (
