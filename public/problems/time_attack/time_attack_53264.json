@@ -8,8 +8,8 @@
         "operation_type": "cyclic-lshift"
       },
       {
-        "operation_type": "and",
-        "parameter": "11111"
+        "operation_type": "xor",
+        "parameter": "11001"
       }
     ],
     "start": "10110",
