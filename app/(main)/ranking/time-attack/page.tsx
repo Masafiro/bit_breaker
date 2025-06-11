@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'; // ★ useCallback をインポート
 import Link from 'next/link';
+import { RefreshCcw } from 'lucide-react';
 
 // ランキングデータの型定義
 interface RankEntry {
@@ -85,9 +86,8 @@ export default function AllTimeAttackRankingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []); // 依存配列は空でOK
+  }, []);
 
-  // ページが最初に読み込まれた時に、一度だけデータを取得する
   useEffect(() => {
     fetchAllRankings();
   }, [fetchAllRankings]);
@@ -99,15 +99,39 @@ export default function AllTimeAttackRankingsPage() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-        <h1>タイムアタック ランキング</h1>
-        <button onClick={fetchAllRankings} disabled={isLoading}>
-          {isLoading ? '更新中...' : 'ランキングを更新'}
-        </button>
+      {/* ★★★ ここからが修正箇所 ★★★ */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+        <h1 style={{ fontSize: '1.5rem', position: 'absolute', left: '50%', transform: 'translateX(-50%)'}} >
+          <strong>タイムアタック ランキング</strong>
+        </h1>
+        
+        {/* 右側に時刻と更新ボタンをまとめる */}
+        <div style={{ textAlign: 'right', marginLeft: 'auto' }}>
+          {data?.generatedAt && (
+            <p style={{ fontSize: '0.8rem', color: '#888888', margin: 0 }}>
+              データ取得時刻: {new Date(data.generatedAt).toLocaleString('ja-JP')}
+            </p>
+          )}
+          {/* 更新ボタンをアイコンに変更し、時刻の隣に移動 */}
+          <button 
+            onClick={fetchAllRankings} 
+            disabled={isLoading}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0.5rem',
+              color: '#888888',
+            }}
+            title="ランキングを更新" // マウスオーバーで説明を表示
+          >
+            {isLoading 
+              ? <span style={{ fontSize: '0.8rem' }}>更新中...</span> 
+              : <RefreshCcw size={20} />
+            }
+          </button>
+        </div>
       </div>
-
-      {/* ★ APIから返ってきた生成時刻を表示 */}
-      {data?.generatedAt && <p>データ生成時刻: {new Date(data.generatedAt).toLocaleString('ja-JP')}</p>}
       
       {isLoading ? (
         <p>読み込み中...</p>
