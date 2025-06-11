@@ -69,7 +69,8 @@ export default function AllTimeAttackRankingsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/ranking/time-attack/all', {
+      const url = `/api/ranking/time-attack/all?timestamp=${new Date().getTime()}`;
+      const response = await fetch(url, {
         credentials: 'include',
         cache: 'no-store',
       });
