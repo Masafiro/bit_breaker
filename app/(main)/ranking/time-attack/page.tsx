@@ -151,7 +151,6 @@ export default function AllTimeAttackRankingsPage() {
       )}
 
       <br />
-      <Link href="/">ホームに戻る</Link>
     </div>
   );
 }
