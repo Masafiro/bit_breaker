@@ -3,52 +3,64 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-// このAPIは認証を必要としない公開ランキングなので、userの取得は不要
+const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json', 'time_attack4.json'];
 
 export async function GET() {
   try {
     const generatedAt = new Date().toISOString();
-    console.log(`API executed at: ${generatedAt}`);
 
-    // ★ ステップ1：2つのテーブルから、それぞれ生のデータを取得する
-    const timeAttackQuery = `SELECT "userId", "sessionType", "bestTime" FROM "TimeAttackBestTime" ORDER BY "bestTime" ASC;`;
-    const usersQuery = `SELECT id, name FROM "User";`;
+    // ★★★ これがキャッシュバスティングです ★★★
+    // 毎回ユニークなクエリを生成するために、現在時刻をコメントとして埋め込む
+    const cacheBusterComment = `-- Cache-Buster: ${Date.now()}`;
 
-    const [timeAttackResults, userResults] = await Promise.all([
-      sql.query(timeAttackQuery),
-      sql.query(usersQuery)
+    // --- ユーザー情報の取得クエリ ---
+    const usersQuery = `
+      SELECT id, name FROM "User";
+      ${cacheBusterComment}
+    `;
+
+    // --- ランキング取得クエリ ---
+    // Promise.allを使うために、一度に全てのクエリを準備します
+    const rankingQueries = sessionTypes.map(sessionType => {
+      const query = `
+        SELECT
+          DENSE_RANK() OVER (ORDER BY T."bestTime" ASC) as "rank",
+          U.id AS "userId",
+          U.name AS "userName",
+          T."bestTime"
+        FROM
+          "TimeAttackBestTime" T
+        LEFT JOIN
+          "User" U ON T."userId" = U.id
+        WHERE
+          T."sessionType" = $1
+        ORDER BY
+          T."bestTime" ASC
+        LIMIT 100;
+        ${cacheBusterComment}
+      `;
+      return sql.query(query, [sessionType]);
+    });
+    
+    // --- データベースへの問い合わせ ---
+    // ユーザー情報と、全ランキングの情報を並行して取得
+    const [userResults, ...timeAttackResults] = await Promise.all([
+      sql.query(usersQuery),
+      ...rankingQueries
     ]);
 
-    // ★ ステップ2：ユーザーIDをキーにした、名前の検索マップを作成する
+    // --- JavaScriptでのデータ結合 ---
     const userMap = new Map<string, string>();
     userResults.rows.forEach(user => {
       userMap.set(user.id, user.name);
     });
 
-    // ★ ステップ3：JavaScriptでランキングデータを組み立てる
-    const allRankings: { [key: string]: any[] } = {
-      'time_attack1.json': [],
-      'time_attack2.json': [],
-      'time_attack3.json': [],
-      'time_attack4.json': [],
-    };
-
-    const rankCounters: { [key: string]: number } = {};
-
-    timeAttackResults.rows.forEach(score => {
-      const sessionType = score.sessionType;
-      if (allRankings[sessionType] && allRankings[sessionType].length < 100) {
-        // ランクカウンターをインクリメント
-        rankCounters[sessionType] = (rankCounters[sessionType] || 0) + 1;
-
-        allRankings[sessionType].push({
-          rank: String(rankCounters[sessionType]),
-          userId: score.userId,
-          userName: userMap.get(score.userId) || 'unknown', // userMapから名前を検索
-          bestTime: score.bestTime,
-        });
-      }
-    });
+    const allRankings = sessionTypes.reduce((acc: { [key: string]: any[] }, sessionType, index) => {
+      // 注意: userResultsが0番目なので、timeAttackResultsのインデックスと合わせる
+      const correspondingResult = timeAttackResults[index];
+      acc[sessionType] = correspondingResult.rows;
+      return acc;
+    }, {});
     
     return NextResponse.json({
       generatedAt: generatedAt,
