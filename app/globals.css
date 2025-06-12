@@ -418,7 +418,7 @@ body {
 
 /* テーブルヘッダー（見出し行）に適用するスタイル */
 .custom-table th {
-  font-size: 110%;
+  font-size: 105%;
   border: 1px solid var(--border); /* テーマに合わせた境界線 */
   padding: 0.5rem;
   background-color: var(--card); /* テーマに合わせた背景色 */
@@ -427,7 +427,7 @@ body {
 
 /* テーブルのデータセルに適用するスタイル */
 .custom-table td {
-  font-size: 110%;
+  font-size: 105%;
   border: 1px solid var(--border);
   padding: 0.5rem;
 }
