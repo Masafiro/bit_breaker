@@ -48,13 +48,20 @@ export async function POST(req: NextRequest) {
 
   const eventType = evt.type;
 
-  // --- ユーザーが新規作成された場合の処理 ---
   if (eventType === 'user.created') {
     const { id, primary_email, display_name } = evt.data;
     if (!id || !primary_email) {
       return NextResponse.json({ message: 'Missing data in user.created payload' }, { status: 400 });
     }
-    const query = `INSERT INTO "User" (id, email, name) VALUES ($1, $2, $3);`;
+    // ★★★ INSERTにON CONFLICT句を追加してUPSERT処理にする ★★★
+    const query = `
+      INSERT INTO "User" (id, email, name)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (email) -- emailが重複した場合
+      DO UPDATE SET       -- 既存のレコードを更新する
+        id = EXCLUDED.id,
+        name = EXCLUDED.name;
+    `;
     try {
       await sql.query(query, [id, primary_email, display_name || '']);
     } catch (dbError) {
@@ -63,7 +70,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ★★★ ユーザー情報が更新された場合の処理 ★★★
+  // --- ユーザー情報が更新された場合の処理 (変更なし) ---
   if (eventType === 'user.updated') {
     const { id, display_name } = evt.data;
     if (!id) {
@@ -75,6 +82,33 @@ export async function POST(req: NextRequest) {
     } catch (dbError) {
       console.error('DB error on user.updated:', dbError);
       return NextResponse.json({ message: 'Database error while updating user' }, { status: 500 });
+    }
+  }
+
+  // ★★★ ユーザーが削除された場合の処理を追加 ★★★
+  if (eventType === 'user.deleted') {
+    const { id } = evt.data;
+    if (!id) {
+      return NextResponse.json({ message: 'Missing id in user.deleted payload' }, { status: 400 });
+    }
+    try {
+      // 1. ProblemBestResultテーブルから関連データを削除
+      const deleteProblemResultsQuery = `DELETE FROM "ProblemBestResult" WHERE "userId" = $1;`;
+      await sql.query(deleteProblemResultsQuery, [id]);
+
+      // 2. TimeAttackBestTimeテーブルから関連データを削除
+      const deleteTimeAttackResultsQuery = `DELETE FROM "TimeAttackBestTime" WHERE "userId" = $1;`;
+      await sql.query(deleteTimeAttackResultsQuery, [id]);
+
+      // 3. 最後にUserテーブルから本体を削除
+      const deleteUserQuery = `DELETE FROM "User" WHERE id = $1;`;
+      await sql.query(deleteUserQuery, [id]);
+    
+      console.log(`Successfully deleted user ${id} and all related data.`);
+
+    } catch (dbError) {
+      console.error('DB error on user.deleted cascade:', dbError);
+      return NextResponse.json({ message: 'Database error while deleting user and related data' }, { status: 500 });
     }
   }
 
