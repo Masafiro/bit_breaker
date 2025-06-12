@@ -22,6 +22,21 @@ interface AllRankings {
 
 // ランキングリストを表示するための再利用可能なコンポーネント
 const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
+  const tableStyle: React.CSSProperties = {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '1rem',
+  };
+  const thStyle: React.CSSProperties = {
+    border: '1px solid #444',
+    padding: '8px',
+    backgroundColor: '#333',
+  };
+  const tdStyle: React.CSSProperties = {
+    border: '1px solid #444',
+    padding: '8px',
+  };
+
   const formatTime = (milliseconds: number) => {
     if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
     const seconds = milliseconds / 1000;
@@ -30,27 +45,29 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
 
   return (
     <div style={{ flex: '1 1 300px', minWidth: '300px' }}>
-      <h2>{title}</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>{title}</h2>
+      <table style={tableStyle}>
         <thead>
           <tr>
-            <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #444' }}>順位</th>
-            <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #444' }}>名前</th>
-            <th style={{ textAlign: 'right', padding: '8px', borderBottom: '1px solid #444' }}>タイム</th>
+            <th style={{...thStyle, textAlign: 'center', width: '50px' }}>順位</th>
+            <th style={{...thStyle, textAlign: 'left' }}>名前</th>
+            <th style={{...thStyle, textAlign: 'right' }}>タイム</th>
           </tr>
         </thead>
         <tbody>
           {data && data.length > 0 ? (
             data.map((entry) => (
               <tr key={entry.userId}>
-                <td style={{ padding: '8px' }}>{entry.rank}位</td>
-                <td style={{ padding: '8px' }}><strong>{entry.userName || 'unknown'}</strong></td>
-                <td style={{ textAlign: 'right', padding: '8px' }}>{formatTime(entry.bestTime)}</td>
+                <td style={{...tdStyle, textAlign: 'center' }}>{entry.rank}位</td>
+                <td style={{...tdStyle, textAlign: 'left' }}><strong>{entry.userName || 'unknown'}</strong></td>
+                <td style={{...tdStyle, textAlign: 'right' }}>{formatTime(entry.bestTime)}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={3} style={{ padding: '1rem', textAlign: 'center' }}>このモードのランキングはまだありません。</td>
+              <td colSpan={3} style={{ ...tdStyle, textAlign: 'center', padding: '1rem' }}>
+                このモードのランキングはまだありません。
+              </td>
             </tr>
           )}
         </tbody>
@@ -99,7 +116,7 @@ export default function AllTimeAttackRankingsPage() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <div style={{ textAlign: 'center', position: 'relative', fontSize: '1.5rem' }}>
+      <div style={{ textAlign: 'center', position: 'relative', fontSize: '2.5rem' }}>
         <h1><strong>タイムアタック ランキング</strong></h1>
       </div>
 
