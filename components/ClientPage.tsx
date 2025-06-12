@@ -1,15 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useReducer} from "react";
-// import { time } from "console";
-// import next from "next";
-// import { ReadStream } from "fs";
 import Image from 'next/image'
 import { useAudio } from "../app/hooks/useAudio";
-// import { neon } from '@neondatabase/serverless';
-// import { createComment } from './actions/createComment';
-// import { getDisplayName } from "next/dist/shared/lib/utils";
-import { useUser } from "@stackframe/stack";
+import { TIME_RATE, UNDO_PENALTY, RETRY_PENALTY, MOVE_PENALTY_RATE } from '@/lib/constants';
 
 const BASE_PATH: string = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -26,11 +20,6 @@ const OPERATION_AUDIO_VOLUME: number = 1.0;
 const NAVIGATION_AUDIO_VOLUME: number = 0.2;
 const UNDO_AUDIO_VOLUME: number = 0.2;
 const DISABLED_AUDIO_VOLUME: number = 0.15;
-
-const TIME_RATE: number = 1.1342;
-const UNDO_PENALTY: number = 10000 / TIME_RATE;
-const RETRY_PENALTY: number = 10000 / TIME_RATE;
-const MOVE_PENALTY_RATE: number = 10000 / TIME_RATE;
 
 type Bit = string;
 type bitHistory = Bit[];

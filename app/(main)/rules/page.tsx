@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TIME_RATE, UNDO_PENALTY, RETRY_PENALTY, MOVE_PENALTY_RATE } from '@/lib/constants';
 
 export default function RulesPage() {
   // テーブルを見やすくするための共通スタイル
@@ -29,9 +30,9 @@ export default function RulesPage() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 className="page-title-fancy" style={{ marginBottom: '2rem' }}>
-        BIT BREAKER のルール
-      </h1>
+      <div style={{ textAlign: 'center', position: 'relative', fontSize: '2.5rem', marginBottom: '2rem' }}>
+        <h1><strong> BIT BREAKER のルール </strong></h1>
+      </div>
 
       <section style={{ marginBottom: '2.5rem' }}>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>
@@ -146,7 +147,7 @@ export default function RulesPage() {
 
       <section style={{ marginBottom: '2.5rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>
-          熟考モード (Problem Mode)
+          熟考モード
         </h2>
         <p style={{ marginTop: '1rem', lineHeight: '1.8' }}>
           時間制限なしで、じっくりとパズルに取り組むモードです。全50問のクリアを目指しましょう。
@@ -156,12 +157,27 @@ export default function RulesPage() {
 
       <section style={{ marginBottom: '2.5rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>
-          タイムアタックモード (Time Attack Mode)
+          タイムアタックモード
         </h2>
         <p style={{ marginTop: '1rem', lineHeight: '1.8' }}>
           決められた問題数を、どれだけ速くクリアできるかを競うモードです。Easy, Normal, Hard, Extra などのカテゴリがあり、モードごとにオンラインランキングが記録されます。
           一手戻ったり、リトライしたりするとペナルティタイムが加算されます。最速記録を目指しましょう！
         </p>
+
+        <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
+          <strong>【ペナルティ】</strong>
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem', lineHeight: '1.8' }}>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <strong>一手戻る:</strong> +{(UNDO_PENALTY * TIME_RATE / 1000).toFixed(2)}秒
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <strong>リトライ:</strong> +{(RETRY_PENALTY * TIME_RATE / 1000).toFixed(2)}秒
+            </li>
+            <li>
+              <strong>最小手数オーバー:</strong> 1手につき +{(MOVE_PENALTY_RATE * TIME_RATE / 1000).toFixed(2)}秒
+            </li>
+          </ul>
+        </div>
       </section>
     </div>
   );
