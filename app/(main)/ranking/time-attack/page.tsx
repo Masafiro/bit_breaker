@@ -18,6 +18,7 @@ interface AllRankings {
   'time_attack2.json': RankEntry[];
   'time_attack3.json': RankEntry[];
   'time_attack4.json': RankEntry[];
+  'total': RankEntry[]; 
 }
 
 // ランキングリストを表示するための再利用可能なコンポーネント
@@ -146,6 +147,7 @@ export default function AllTimeAttackRankingsPage() {
           <RankingList title="Normal" data={data?.rankings?.['time_attack2.json'] || []} />
           <RankingList title="Hard" data={data?.rankings?.['time_attack3.json'] || []} />
           <RankingList title="Extra" data={data?.rankings?.['time_attack4.json'] || []} />
+          <RankingList title="総合 🏆" data={data?.rankings?.['total'] || []} />
         </div>
       )}
 

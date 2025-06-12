@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+const LIMIT = 50; // ランキングの上限数
 const sessionTypes = ['time_attack1.json', 'time_attack2.json', 'time_attack3.json', 'time_attack4.json'];
 
 export async function GET() {
@@ -13,14 +14,7 @@ export async function GET() {
     // 毎回ユニークなクエリを生成するために、現在時刻をコメントとして埋め込む
     const cacheBusterComment = `-- Cache-Buster: ${Date.now()}`;
 
-    // --- ユーザー情報の取得クエリ ---
-    const usersQuery = `
-      SELECT id, name FROM "User";
-      ${cacheBusterComment}
-    `;
-
-    // --- ランキング取得クエリ ---
-    // Promise.allを使うために、一度に全てのクエリを準備します
+    // --- 各モードのランキング取得クエリ ---
     const rankingQueries = sessionTypes.map(sessionType => {
       const query = `
         SELECT
@@ -28,39 +22,57 @@ export async function GET() {
           U.id AS "userId",
           U.name AS "userName",
           T."bestTime"
-        FROM
-          "TimeAttackBestTime" T
-        LEFT JOIN
-          "User" U ON T."userId" = U.id
-        WHERE
-          T."sessionType" = $1
-        ORDER BY
-          T."bestTime" ASC
-        LIMIT 100;
+        FROM "TimeAttackBestTime" T
+        LEFT JOIN "User" U ON T."userId" = U.id
+        WHERE T."sessionType" = $1
+        ORDER BY T."bestTime" ASC
+        LIMIT ${LIMIT};
         ${cacheBusterComment}
       `;
       return sql.query(query, [sessionType]);
     });
-    
-    // --- データベースへの問い合わせ ---
-    // ユーザー情報と、全ランキングの情報を並行して取得
-    const [userResults, ...timeAttackResults] = await Promise.all([
-      sql.query(usersQuery),
-      ...rankingQueries
-    ]);
 
-    // --- JavaScriptでのデータ結合 ---
-    const userMap = new Map<string, string>();
-    userResults.rows.forEach(user => {
-      userMap.set(user.id, user.name);
+    // ★ 総合ランキング取得クエリを追加
+    const totalRankingQuery = `
+      SELECT
+        DENSE_RANK() OVER (ORDER BY SUM(T."bestTime") ASC) as "rank",
+        U.id AS "userId",
+        U.name AS "userName",
+        SUM(T."bestTime") AS "bestTime" -- フロントの型に合わせて "bestTime" というカラム名で合計タイムを返す
+      FROM "TimeAttackBestTime" T
+      JOIN "User" U ON T."userId" = U.id
+      WHERE T."sessionType" IN ($1, $2, $3, $4)
+      GROUP BY U.id, U.name
+      -- HAVING句で、4つのモード全てに参加しているユーザーのみを絞り込む
+      HAVING COUNT(DISTINCT T."sessionType") = 4
+      ORDER BY "bestTime" ASC
+      LIMIT ${LIMIT};
+      ${cacheBusterComment}
+    `;
+    const totalRankingPromise = sql.query(totalRankingQuery, sessionTypes);
+
+    // --- データベースへの問い合わせ (並列実行) ---
+    // Promise.allで、個別のランキングと総合ランキングを同時に取得
+    const allResults = await Promise.all([
+      ...rankingQueries,
+      totalRankingPromise
+    ]);
+    const totalResult = allResults[allResults.length - 1];
+    const individualResults = allResults.slice(0, -1);
+
+    // --- 結果の整形 ---
+    const allRankings: { [key: string]: any[] } = {};
+    
+    // 各モードのランキングを格納
+    sessionTypes.forEach((sessionType, index) => {
+      allRankings[sessionType] = individualResults[index].rows;
     });
 
-    const allRankings = sessionTypes.reduce((acc: { [key: string]: any[] }, sessionType, index) => {
-      // 注意: userResultsが0番目なので、timeAttackResultsのインデックスと合わせる
-      const correspondingResult = timeAttackResults[index];
-      acc[sessionType] = correspondingResult.rows;
-      return acc;
-    }, {});
+    // ★ 総合ランキングの結果を 'total' というキーで格納
+    allRankings['total'] = totalResult.rows.map(row => ({
+      ...row,
+      bestTime: Number(row.bestTime) // bestTimeを文字列から数値へ明示的に変換
+    }));
     
     return NextResponse.json({
       generatedAt: generatedAt,
