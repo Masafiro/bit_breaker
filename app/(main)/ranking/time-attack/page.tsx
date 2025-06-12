@@ -22,21 +22,6 @@ interface AllRankings {
 
 // ランキングリストを表示するための再利用可能なコンポーネント
 const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
-  const tableStyle: React.CSSProperties = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '1rem',
-  };
-  const thStyle: React.CSSProperties = {
-    border: '1px solid #444',
-    padding: '8px',
-    backgroundColor: '#333',
-  };
-  const tdStyle: React.CSSProperties = {
-    border: '1px solid #444',
-    padding: '8px',
-  };
-
   const formatTime = (milliseconds: number) => {
     if (typeof milliseconds !== 'number' || isNaN(milliseconds)) return '記録なし';
     const seconds = milliseconds / 1000;
@@ -45,27 +30,27 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
 
   return (
     <div style={{ flex: '1 1 300px', minWidth: '300px' }}>
-      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>{title}</h2>
-      <table style={tableStyle}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', borderBottom: '2px solid #444', paddingBottom: '0.5rem' }}>{title}</h2>
+      <table className="custom-table">
         <thead>
           <tr>
-            <th style={{...thStyle, textAlign: 'center', width: '50px' }}>順位</th>
-            <th style={{...thStyle, textAlign: 'left' }}>名前</th>
-            <th style={{...thStyle, textAlign: 'right' }}>タイム</th>
+            <th style={{ textAlign: 'center', width: '50px' }}>順位</th>
+            <th style={{ textAlign: 'left' }}>名前</th>
+            <th style={{ textAlign: 'right' }}>タイム</th>
           </tr>
         </thead>
         <tbody>
           {data && data.length > 0 ? (
             data.map((entry) => (
               <tr key={entry.userId}>
-                <td style={{...tdStyle, textAlign: 'center' }}>{entry.rank}位</td>
-                <td style={{...tdStyle, textAlign: 'left' }}><strong>{entry.userName || 'unknown'}</strong></td>
-                <td style={{...tdStyle, textAlign: 'right' }}>{formatTime(entry.bestTime)}</td>
+                <td style={{ textAlign: 'center' }}>{entry.rank}位</td>
+                <td style={{ textAlign: 'left' }}><strong>{entry.userName || 'unknown'}</strong></td>
+                <td style={{ textAlign: 'right' }}>{formatTime(entry.bestTime)}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={3} style={{ ...tdStyle, textAlign: 'center', padding: '1rem' }}>
+              <td colSpan={3} style={{ textAlign: 'center', padding: '1rem' }}>
                 このモードのランキングはまだありません。
               </td>
             </tr>

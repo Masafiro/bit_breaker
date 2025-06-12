@@ -3,30 +3,6 @@ import { TIME_RATE, UNDO_PENALTY, RETRY_PENALTY, MOVE_PENALTY_RATE } from '@/lib
 
 export default function RulesPage() {
   // テーブルを見やすくするための共通スタイル
-  const tableStyle: React.CSSProperties = {
-    borderCollapse: 'collapse',
-    margin: '1rem 0',
-    width: 'auto',
-    fontSize: '0.9rem',
-  };
-  const thStyle: React.CSSProperties = {
-    border: '1px solid #555',
-    padding: '0.5rem',
-    textAlign: 'center',
-    backgroundColor: '#333',
-  };
-  const tdStyle: React.CSSProperties = {
-    border: '1px solid #555',
-    padding: '0.5rem',
-    textAlign: 'center',
-  };
-  const codeStyle: React.CSSProperties = {
-    fontFamily: 'monospace',
-    backgroundColor: '#333',
-    padding: '0.2rem 0.4rem',
-    borderRadius: '4px',
-    fontSize: '1.1rem',
-  };
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
@@ -57,66 +33,66 @@ export default function RulesPage() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '2rem' }}>
           <div>
             <strong>AND (論理積)</strong>
-            <table style={tableStyle}>
-              <thead><tr><th style={thStyle}>A</th><th style={thStyle}>B</th><th style={thStyle}>A AND B</th></tr></thead>
+            <table className="custom-table">
+              <thead><tr><th>A</th><th>B</th><th>A AND B</th></tr></thead>
               <tbody>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>0</td><td style={tdStyle}>0</td></tr>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>1</td><td style={tdStyle}>0</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>0</td><td style={tdStyle}>0</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>1</td><td style={tdStyle}>1</td></tr>
+                <tr><td>0</td><td>0</td><td>0</td></tr>
+                <tr><td>0</td><td>1</td><td>0</td></tr>
+                <tr><td>1</td><td>0</td><td>0</td></tr>
+                <tr><td>1</td><td>1</td><td>1</td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <strong>OR (論理和)</strong>
-            <table style={tableStyle}>
-             <thead><tr><th style={thStyle}>A</th><th style={thStyle}>B</th><th style={thStyle}>A OR B</th></tr></thead>
+            <table className="custom-table">
+             <thead><tr><th>A</th><th>B</th><th>A OR B</th></tr></thead>
              <tbody>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>0</td><td style={tdStyle}>0</td></tr>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>1</td><td style={tdStyle}>1</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>0</td><td style={tdStyle}>1</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>1</td><td style={tdStyle}>1</td></tr>
+                <tr><td>0</td><td>0</td><td>0</td></tr>
+                <tr><td>0</td><td>1</td><td>1</td></tr>
+                <tr><td>1</td><td>0</td><td>1</td></tr>
+                <tr><td>1</td><td>1</td><td>1</td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <strong>XOR (排他的論理和)</strong>
-            <table style={tableStyle}>
-              <thead><tr><th style={thStyle}>A</th><th style={thStyle}>B</th><th style={thStyle}>A XOR B</th></tr></thead>
+            <table className="custom-table">
+              <thead><tr><th>A</th><th>B</th><th>A XOR B</th></tr></thead>
               <tbody>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>0</td><td style={tdStyle}>0</td></tr>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>1</td><td style={tdStyle}>1</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>0</td><td style={tdStyle}>1</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>1</td><td style={tdStyle}>0</td></tr>
+                <tr><td>0</td><td>0</td><td>0</td></tr>
+                <tr><td>0</td><td>1</td><td>1</td></tr>
+                <tr><td>1</td><td>0</td><td>1</td></tr>
+                <tr><td>1</td><td>1</td><td>0</td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <strong>NOT (否定)</strong>
-            <table style={tableStyle}>
-              <thead><tr><th style={thStyle}>A</th><th style={thStyle}>NOT A</th></tr></thead>
+            <table className="custom-table">
+              <thead><tr><th>A</th><th>NOT A</th></tr></thead>
               <tbody>
-                <tr><td style={tdStyle}>0</td><td style={tdStyle}>1</td></tr>
-                <tr><td style={tdStyle}>1</td><td style={tdStyle}>0</td></tr>
+                <tr><td>0</td><td>1</td></tr>
+                <tr><td>1</td><td>0</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
-          <strong>【具体例】 「現在」が <code style={codeStyle}>10101</code> の場合:</strong>
+        <div className='code-box'>
+          <strong>【具体例】 「現在」が <code className="code-block">10101</code> の場合:</strong>
           <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem', fontFamily: 'monospace', fontSize: '1.1rem', lineHeight: '2' }}>
             <li>
-              <code style={codeStyle}>10101</code> AND <code style={codeStyle}>00111</code> → <code style={codeStyle}>00101</code> (両方が1の桁だけが1になる)
+              <code className="code-block">10101</code> AND <code className="code-block">00111</code> → <code className="code-block">00101</code> (両方が1の桁だけが1になる)
             </li>
             <li>
-              <code style={codeStyle}>10101</code> OR <code style={codeStyle}>00111</code> → <code style={codeStyle}>10111</code> (どちらかが1の桁は1になる)
+              <code className="code-block">10101</code> OR <code className="code-block">00111</code> → <code className="code-block">10111</code> (どちらかが1の桁は1になる)
             </li>
             <li>
-              <code style={codeStyle}>10101</code> XOR <code style={codeStyle}>00111</code> → <code style={codeStyle}>10010</code> (桁の値が違うところだけが1になる)
+              <code className="code-block">10101</code> XOR <code className="code-block">00111</code> → <code className="code-block">10010</code> (桁の値が違うところだけが1になる)
             </li>
             <li>
-              NOT <code style={codeStyle}>10101</code> → <code style={codeStyle}>01010</code> (0と1がすべて反転する)
+              NOT <code className="code-block">10101</code> → <code className="code-block">01010</code> (0と1がすべて反転する)
             </li>
           </ul>
         </div>
@@ -130,14 +106,14 @@ export default function RulesPage() {
           <li style={{ marginTop: '0.5rem' }}><strong>R-SHIFT (右シフト)</strong>: 全てのビットが右に一つずれ、一番右のビットが一番左に移動します。</li>
         </ul>
 
-        <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
-          <strong>【具体例】 「現在」が <code style={codeStyle}>10110</code> の場合:</strong>
+        <div className='code-box'>
+          <strong>【具体例】 「現在」が <code className="code-block">10110</code> の場合:</strong>
           <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem', fontFamily: 'monospace', fontSize: '1.1rem', lineHeight: '2' }}>
             <li>
-              L-SHIFT <code style={codeStyle}>10110</code> → <code style={codeStyle}>01101</code> (左に循環シフト)
+              L-SHIFT <code className="code-block">10110</code> → <code className="code-block">01101</code> (左に循環シフト)
             </li>
             <li>
-              R-SHIFT <code style={codeStyle}>10110</code> → <code style={codeStyle}>01011</code> (右に循環シフト)
+              R-SHIFT <code className="code-block">10110</code> → <code className="code-block">01011</code> (右に循環シフト)
             </li>
           </ul>
         </div>
@@ -164,7 +140,7 @@ export default function RulesPage() {
           一手戻ったり、リトライしたりするとペナルティタイムが加算されます。最速記録を目指しましょう！
         </p>
 
-        <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
+        <div className='code-box'>
           <strong>【ペナルティ】</strong>
           <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem', lineHeight: '1.8' }}>
             <li style={{ marginBottom: '0.5rem' }}>
