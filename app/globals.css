@@ -409,24 +409,6 @@ body {
   height: 20px;
 }
 
-  /* const tableStyle: React.CSSProperties = {
-    borderCollapse: 'collapse',
-    margin: '1rem 0',
-    width: 'auto',
-    fontSize: '0.9rem',
-  };
-  const thStyle: React.CSSProperties = {
-    border: '1px solid #555',
-    padding: '0.5rem',
-    textAlign: 'center',
-    backgroundColor: 'var(--card)',
-  };
-  const tdStyle: React.CSSProperties = {
-    border: '1px solid #555',
-    padding: '0.5rem',
-    textAlign: 'center',
-  }; */
-
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -436,16 +418,18 @@ body {
 
 /* テーブルヘッダー（見出し行）に適用するスタイル */
 .custom-table th {
+  font-size: 110%;
   border: 1px solid var(--border); /* テーマに合わせた境界線 */
-  padding: 0.75rem;
+  padding: 0.5rem;
   background-color: var(--card); /* テーマに合わせた背景色 */
   font-weight: bold;
 }
 
 /* テーブルのデータセルに適用するスタイル */
 .custom-table td {
+  font-size: 110%;
   border: 1px solid var(--border);
-  padding: 0.75rem;
+  padding: 0.5rem;
 }
 
 .code-box {
