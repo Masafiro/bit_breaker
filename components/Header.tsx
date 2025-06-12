@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useUser, SignIn, SignUp } from '@stackframe/stack';
 import Image from 'next/image'; 
-import { Home, Trophy, UserCircle} from 'lucide-react';
+import { Home, Trophy, UserCircle } from 'lucide-react';
+import { ScrollIcon } from 'lucide-react';
 
 export default function Header() {
   const user = useUser();
@@ -15,15 +16,17 @@ export default function Header() {
         <Home size={32} />
       </Link>
       <Link href="/ranking/time-attack">
-        {/* <Crown size={32} /> */}
-        <Trophy size={32} ></Trophy>
+        <Trophy size={32} />
+      </Link>
+      <Link href="/rules">
+        <ScrollIcon size={32} />
       </Link>
       <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
         {user ? (
           <Link href="/account">
             {user.profileImageUrl ? (
               <Image
-                src={user.profileImageUrl || '/default-avatar.png'}
+                src={user.profileImageUrl}
                 alt="アカウント設定"
                 width={32} 
                 height={32}
