@@ -45,7 +45,7 @@ const RankingList = ({ title, data }: { title: string, data: RankEntry[] }) => {
             data.map((entry) => (
               <tr key={entry.userId}>
                 <td style={{ textAlign: 'center' }}>{entry.rank}位</td>
-                <td style={{ textAlign: 'left', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><strong>{entry.userName || 'unknown'}</strong></td>
+                <td style={{ textAlign: 'left', maxWidth: '180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><strong>{entry.userName || 'unknown'}</strong></td>
                 <td style={{ textAlign: 'right' }}>{formatTime(entry.bestTime)}</td>
               </tr>
             ))
