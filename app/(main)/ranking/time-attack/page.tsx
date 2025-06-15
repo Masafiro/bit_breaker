@@ -132,6 +132,12 @@ export default function AllTimeAttackRankingsPage() {
           }
         </button>
       </div>
+
+      <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+        <p style={{ fontSize: '0.8rem', color: '#888888' }}>
+          ※不適切なユーザー名は予告なくBANの対象となります
+        </p>
+      </div>
       
       {isLoading ? (
         <p>読み込み中...</p>
