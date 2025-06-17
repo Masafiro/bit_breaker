@@ -49,7 +49,7 @@ export default function ProblemRankingPage() {
   return (
     <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', position: 'relative', fontSize: '2.5rem' }}>
-        <h1><strong>塾考モード ランキング</strong></h1>
+        <h1><strong>塾考 ランキング</strong></h1>
       </div>
 
       {/* 更新ボタンと時刻表示の行 */}
