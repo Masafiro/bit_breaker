@@ -18,7 +18,7 @@ export default function Header() {
       <Link href="/rules">
         <ScrollIcon size={32} />
       </Link>
-      <Link href="/ranking/time-attack">
+      <Link href="/ranking">
         <Trophy size={32} />
       </Link>
       <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
